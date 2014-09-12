@@ -1,0 +1,22 @@
+## Interface: 50400
+## Title: GnomTEC
+## Notes: GnomTEC Addon Framework.
+## Notes-deDE: GnomTEC Addon Framework.
+## Notes-esES: GnomTEC Addon Framework.
+## Notes-esMX: GnomTEC Addon Framework.
+## Notes-frFR: GnomTEC Addon Framework.
+## Notes-itIT: GnomTEC Addon Framework.
+## Notes-koKR: GnomTEC Addon Framework.
+## Notes-ptBR: GnomTEC Addon Framework.
+## Notes-ruRU: GnomTEC Addon Framework.
+## Notes-zhCN: GnomTEC Addon Framework.
+## Notes-zhTW: GnomTEC Addon Framework.
+## Author: GnomTEC
+## Version: 5.4.8.1
+## SavedVariables: GnomTEC_DB
+
+GnomTEC\GnomTEC.xml
+
+locale\locale.xml
+
+GnomTEC.lua
