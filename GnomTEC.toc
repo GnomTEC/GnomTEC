@@ -11,7 +11,7 @@
 ## Notes-ruRU: GnomTEC Addon Framework.
 ## Notes-zhCN: GnomTEC Addon Framework.
 ## Notes-zhTW: GnomTEC Addon Framework.
-## Author: GnomTEC
+## Author: Peter Jack
 ## Version: 5.4.8.1
 ## SavedVariables: GnomTEC_DB
 
