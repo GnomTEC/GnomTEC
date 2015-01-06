@@ -1,10 +1,10 @@
 -- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 5.4.8.1
+-- Version: 6.0.3.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright 2014 Peter Jack
+-- Copyright 2014-2015 Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -24,4 +24,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("GnomTEC_", "enUS", true)
 if not L then return end
 
-L["L_OPTIONS_TITLE"] = "Addon which will assist all GnomTEC addons in future with centralized templates and functionality.\n\n"
+L["L_WELCOME"] = "Welcome to GnomTEC (GnomTEC Addon Framework)"
+
+L["L_DESCRIPTION"] = "GnomTEC Addon Framework providing base functionalities to all GnomTEC Addons.\n\n"

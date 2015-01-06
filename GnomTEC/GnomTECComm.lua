@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 6.0.2.1
+-- Version: 6.0.3.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014 by Peter Jack
+-- Copyright © 2014-2015 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 1
+local MAJOR, MINOR = "GnomTECComm-1.0", 2
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -266,8 +266,6 @@ local function _commSend(addonTitle, target, comm, ...)
 		unitInfo.scantime = now
 	end
 
-_LogMessage(LOG_DEBUG, "Sending %s to %s", comm, target)
-
 	local serialized = class.aceSerializer:Serialize(comm, ...)
 	local bytes = string.len(serialized)
 
@@ -334,8 +332,6 @@ local function _OnCommReceived(prefix, message, distribution, sender)
 			_LogMessage(LOG_ERROR,"Could not deserialize communication message: %s from ",(messageParts[2] or "???"), sender)
 		else
 			local comm = messageParts[2]
-
-_LogMessage(LOG_DEBUG, "Receiving %s from %s", comm, sender)
 
 			if (COMM_REQ_TIMESTAMPS == comm) then
 				_commStatisticLogReceive(false, true, bytes, "GnomTEC", sender)

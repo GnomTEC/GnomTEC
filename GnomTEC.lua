@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 6.0.2.1
+-- Version: 6.0.3.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014 by Peter Jack
+-- Copyright © 2014-2015 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -27,14 +27,14 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_")
 -- ----------------------------------------------------------------------
 -- addonInfo for addon registration to GnomTEC API
 local addonInfo = {
-	["Name"] = "GnomTEC Addon Framework",
-	["Description"] = "GnomTEC Addon Framework",	
-	["Version"] = "6.0.2.1",
-	["Date"] = "2014-10-15",
+	["Name"] = "GnomTEC (Addon Framework)",
+	["Description"] = L["L_DESCRIPTION"],	
+	["Version"] = "6.0.3.1",
+	["Date"] = "2015-01-06",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
-	["Copyright"] = "© 2014 by Peter Jack",
+	["Copyright"] = "© 2014-2015 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",
 }
 
@@ -74,8 +74,10 @@ local LOG_DEBUG 	= 4
 -- ----------------------------------------------------------------------
 
 local function GnomTECAddonFramework()
-	-- call base class
-	local self, protected = GnomTECAddon("GnomTEC", addonInfo)
+	local self = {}
+	
+	-- call addon base class
+	local addon, protected = GnomTECAddon("GnomTEC", addonInfo)
 	
 	-- public fields go in the instance table
 	-- self.field = value
@@ -106,7 +108,7 @@ local function GnomTECAddonFramework()
 
 	-- constructor
 	do
-		self.LogMessage(LOG_INFO, "Willkommen bei GnomTEC (GnomTEC Addon Framework)")
+		addon.LogMessage(LOG_INFO, L["L_WELCOME"])
 	end
 	
 	-- return the instance table

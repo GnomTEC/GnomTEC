@@ -29,6 +29,48 @@
 	<Include file="GnomTEC.lua"/>
 	<Include file="GnomTECComm.lua"/>
 
+	<!-- GnomTEC Framework Base Widget Templates -->
+	<Include file="Templates\T_GNOMTECWIDGET.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINER.xml"/> 
+
+	<!-- GnomTEC Framework Base Widget Classes -->
+	<Include file="Widgets\GnomTECWidget.lua"/>
+	<Include file="Widgets\GnomTECWidgetContainer.lua"/> 
+
+	<!-- GnomTEC Framework Widget Templates -->
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTFILL.xml"/> 
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTGRID.xml"/> 
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTHORIZONTAL.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTTABULATOR.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTVERTICAL.xml"/> 
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERTOOLBOX.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERWINDOW.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETDROPDOWNBUTTON.xml"/>	
+	<Include file="Templates\T_GNOMTECWIDGETEDITBOX.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETMAP.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETPANELBUTTON.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETSCROLLINGMESSAGE.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETSPACER.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETTEXT.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETTEXTUREBUTTON.xml"/>
+
+	<!-- GnomTEC Framework Widget Classes -->
+	<Include file="Widgets\GnomTECWidgetContainerLayoutFill.lua"/> 
+	<Include file="Widgets\GnomTECWidgetContainerLayoutGrid.lua"/> 
+	<Include file="Widgets\GnomTECWidgetContainerLayoutHorizontal.lua"/>
+	<Include file="Widgets\GnomTECWidgetContainerLayoutTabulator.lua"/>
+	<Include file="Widgets\GnomTECWidgetContainerLayoutVertical.lua"/> 
+	<Include file="Widgets\GnomTECWidgetContainerToolbox.lua"/>
+	<Include file="Widgets\GnomTECWidgetContainerWindow.lua"/>
+	<Include file="Widgets\GnomTECWidgetDropDownButton.lua"/>
+	<Include file="Widgets\GnomTECWidgetEditBox.lua"/>
+	<Include file="Widgets\GnomTECWidgetMap.lua"/>
+	<Include file="Widgets\GnomTECWidgetPanelButton.lua"/>
+	<Include file="Widgets\GnomTECWidgetScrollingMessage.lua"/>
+	<Include file="Widgets\GnomTECWidgetSpacer.lua"/>
+	<Include file="Widgets\GnomTECWidgetText.lua"/>
+	<Include file="Widgets\GnomTECWidgetTextureButton.lua"/>
+
 	<!-- GnomTEC Framework Classes -->
 	<Include file="GnomTECAddon.lua"/>
 </Ui>
