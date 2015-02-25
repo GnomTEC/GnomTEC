@@ -94,8 +94,8 @@ function GnomTECWidgetMap(init)
 
 	function self.GetMinReseize()
 		
-		local minWidth = (32 * 1000.0 * 4.0 / 1024.0)
-		local minHeight = (32 * 667.0 * 3.0 / 768.0)
+		local minWidth = ceil(32 * 1000.0 * 4.0 / 1024.0)
+		local minHeight = ceil(32 * 667.0 * 3.0 / 768.0)
 		
 		return minWidth, minHeight
 	end
@@ -110,8 +110,8 @@ function GnomTECWidgetMap(init)
 			maxHeight = maxWidth
 		end
 
-		maxWidth = (maxWidth * 1000.0 * 4.0 / 1024.0)
-		maxHeight = (maxHeight * 667.0 * 3.0 / 768.0)
+		maxWidth = floor(maxWidth * 1000.0 * 4.0 / 1024.0)
+		maxHeight = floor(maxHeight * 667.0 * 3.0 / 768.0)
 
 		return maxWidth, maxHeight
 	end

@@ -79,9 +79,12 @@ local function emptynil( x ) return x ~= "" and x or nil end
 		["Copyright"] 		- copyright information
 		["License"] 		- license information	
 --]]
-function GnomTECAddon(addonTitle, addonInfo)
+function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
 	-- call base class
 	local self, protected = GnomTECComm(addonTitle, addonInfo)
+	
+	local defaultsDb = defaultsDb
+	local optionsArray = optionsArray
 		
 	-- public fields go in the instance table
 	-- self.field = value
@@ -167,6 +170,14 @@ function GnomTECAddon(addonTitle, addonInfo)
 		return addonTitle
 	end
 	
+	function self.UnregisterAllEvents()
+		aceAddon:UnregisterAllEvents()
+	end
+	
+	function self.RegisterChatCommand(command, func)
+		aceAddon:RegisterChatCommand(command, func)
+	end
+	
 	-- constructor
 	do
 		class.lastUID = class.lastUID + 1
@@ -233,6 +244,13 @@ function GnomTECAddon(addonTitle, addonInfo)
 		LibStub("AceConfig-3.0"):RegisterOptionsTable(addonInfo["Name"].." Main", aceOptionsMain)
 		LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonInfo["Name"].." Main", addonInfo["Name"]);
 
+		if (optionsArray) then
+			for idx, value in ipairs (optionsArray) do
+				LibStub("AceConfig-3.0"):RegisterOptionsTable(addonInfo["Name"].." "..value.name, value)
+				LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonInfo["Name"].." "..value.name, value.name, addonInfo["Name"]);
+			end
+		end
+			
 		function aceAddon:OnInitialize()
 			OnInitialize()
 		end

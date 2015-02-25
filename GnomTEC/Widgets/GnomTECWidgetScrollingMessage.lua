@@ -159,8 +159,8 @@ function GnomTECWidgetScrollingMessage(init)
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = UIParent:GetWidth()
-		local maxHeight = UIParent:GetHeight()
+		local maxWidth = floor(UIParent:GetWidth())
+		local maxHeight = floor(UIParent:GetHeight())
 
 		return maxWidth, maxHeight
 	end

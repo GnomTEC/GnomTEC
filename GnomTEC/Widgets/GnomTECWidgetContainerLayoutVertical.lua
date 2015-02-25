@@ -107,10 +107,10 @@ function GnomTECWidgetContainerLayoutVertical(init)
 		end	
 
 		if (minWidth > UIParent:GetWidth()) then
-			minWidth = UIParent:GetWidth()
+			minWidth = floor(UIParent:GetWidth())
 		end
 		if (minHeight > UIParent:GetHeight()) then
-			minHeight = UIParent:GetHeight()
+			minHeight = floor(UIParent:GetHeight())
 		end
 
 		return minWidth, minHeight
@@ -118,7 +118,7 @@ function GnomTECWidgetContainerLayoutVertical(init)
 
 	function self.GetMaxReseize()
 		-- should be calculated according childs and layout
-		local maxWidth = UIParent:GetWidth()
+		local maxWidth = floor(UIParent:GetWidth())
 		local maxHeight = 0
 
 		for idx, child in ipairs(protected.childs) do
@@ -132,7 +132,7 @@ function GnomTECWidgetContainerLayoutVertical(init)
 		end
 
 		if (maxHeight > UIParent:GetHeight()) then
-			maxHeight = UIParent:GetHeight()
+			maxHeight = floor(UIParent:GetHeight())
 		end
 
 		return maxWidth, maxHeight

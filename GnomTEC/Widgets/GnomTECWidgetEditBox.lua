@@ -172,10 +172,10 @@ function GnomTECWidgetEditBox(init)
 		local maxHeight
 
 		if (protected.multiLine) then
-			maxWidth = UIParent:GetWidth()
-			maxHeight = UIParent:GetHeight()
+			maxWidth = floor(UIParent:GetWidth())
+			maxHeight = floor(UIParent:GetHeight())
 		else
-			maxWidth = UIParent:GetWidth()
+			maxWidth = floor(UIParent:GetWidth())
 			maxHeight = 24
 		end
 		
@@ -306,7 +306,7 @@ function GnomTECWidgetEditBox(init)
 			slider:SetMinMaxValues(0, scrollFrame:GetVerticalScrollRange());
 			slider:SetValue(scrollFrame:GetVerticalScroll());   
 		else
-			local widgetFrame = CreateFrame("EditBox", protected.widgetUID, UIParent)
+			local widgetFrame = CreateFrame("EditBox", protected.widgetUID, UIParent,"T_GNOMTECWIDGETEDITBOX")
 			widgetFrame:Hide()
 
 			protected.widgetFrame = widgetFrame 

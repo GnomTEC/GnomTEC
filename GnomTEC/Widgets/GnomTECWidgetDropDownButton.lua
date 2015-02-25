@@ -124,13 +124,13 @@ function GnomTECWidgetDropDownButton(init)
 			end
 		end	
 		
-		minWidth = minWidth + 48
+		minWidth = ceil(minWidth + 48)
 		
 		return minWidth, minHeight
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = UIParent:GetWidth()
+		local maxWidth = floor(UIParent:GetWidth())
 		local maxHeight = 24
 
 		return maxWidth, maxHeight

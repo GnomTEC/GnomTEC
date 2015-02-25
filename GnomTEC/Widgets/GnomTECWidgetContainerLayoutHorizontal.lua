@@ -107,10 +107,10 @@ function GnomTECWidgetContainerLayoutHorizontal(init)
 		end	
 	
 		if (minWidth > UIParent:GetWidth()) then
-			minWidth = UIParent:GetWidth()
+			minWidth = floor(UIParent:GetWidth())
 		end
 		if (minHeight > UIParent:GetHeight()) then
-			minHeight = UIParent:GetHeight()
+			minHeight = floor(UIParent:GetHeight())
 		end
 
 		return minWidth, minHeight
@@ -119,7 +119,7 @@ function GnomTECWidgetContainerLayoutHorizontal(init)
 	function self.GetMaxReseize()
 		-- should be calculated according childs and layout
 		local maxWidth = 0
-		local maxHeight = UIParent:GetHeight()
+		local maxHeight = floor(UIParent:GetHeight())
 
 		for idx, child in ipairs(protected.childs) do
 			if (child.widget.IsShown()) then
@@ -132,7 +132,7 @@ function GnomTECWidgetContainerLayoutHorizontal(init)
 		end
 
 		if (maxWidth > UIParent:GetWidth()) then
-			maxWidth = UIParent:GetWidth()
+			maxWidth = floor(UIParent:GetWidth())
 		end
 		
 		return maxWidth, maxHeight
@@ -432,7 +432,7 @@ function GnomTECWidgetContainerLayoutHorizontal(init)
 			init = {}
 		end
 
-		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent)
+		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent, "T_GNOMTECWIDGETCONTAINERLAYOUTHORIZONTAL")
 		widgetFrame:Hide()
 
 		local containerFrame = widgetFrame

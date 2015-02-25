@@ -100,16 +100,16 @@ function GnomTECWidgetText(init)
 		local minHeight = 16
 		
 		if (protected.textFontString) then
-			minWidth = protected.textFontString:GetStringWidth() + 30
-			minHeight = protected.textFontString:GetStringHeight() + 4
+			minWidth = ceil(protected.textFontString:GetStringWidth() + 30)
+			minHeight = ceil(protected.textFontString:GetStringHeight() + 4)
 		end
 		
 		return minWidth, minHeight
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = UIParent:GetWidth()
-		local maxHeight = UIParent:GetHeight()
+		local maxWidth = floor(UIParent:GetWidth())
+		local maxHeight = floor(UIParent:GetHeight())
 
 		return maxWidth, maxHeight
 	end

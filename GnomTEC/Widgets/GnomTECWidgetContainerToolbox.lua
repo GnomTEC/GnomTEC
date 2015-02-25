@@ -191,13 +191,13 @@ function GnomTECWidgetContainerToolbox(init)
 		if (maxWidth < 16) then
 			maxWidth = 16
 		elseif (maxWidth > UIParent:GetWidth()) then
-			maxWidth = UIParent:GetWidth()
+			maxWidth = floor(UIParent:GetWidth())
 		end
 
 		if (maxHeight < 16) then
 			maxHeight = 16
 		elseif (maxHeight > UIParent:GetHeight()) then
-			maxHeight = UIParent:GetHeight()
+			maxHeight = floor(UIParent:GetHeight())
 		end
 
 		return maxWidth, maxHeight

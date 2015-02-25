@@ -103,8 +103,8 @@ function GnomTECWidgetSpacer(init)
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = UIParent:GetWidth()
-		local maxHeight = UIParent:GetHeight()
+		local maxWidth = floor(UIParent:GetWidth())
+		local maxHeight = floor(UIParent:GetHeight())
 
 		return maxWidth, maxHeight
 	end
@@ -141,14 +141,13 @@ function GnomTECWidgetSpacer(init)
 		protected.minWidth = init.minWidth or 1
 		protected.minHeight = init.minHeight or 1
 		
-		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent)
+		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent, "T_GNOMTECWIDGETSPACER")
 		widgetFrame:Hide()
 		
 		protected.widgetFrame = widgetFrame 
 		
 		-- should be configurable later eg. saveable
 		widgetFrame:SetPoint("CENTER")		
-
 		
 		-- spacer should not have 100% as default as they should use minimal space by default
 		-- so we check if we have computed default values in base class

@@ -95,14 +95,14 @@ function GnomTECWidgetPanelButton(init)
 	end
 
 	function self.GetMinReseize()
-		local minWidth = protected.widgetFrame:GetTextWidth() + 10
+		local minWidth = ceil(protected.widgetFrame:GetTextWidth() + 10)
 		local minHeight = 24
 		
 		return minWidth, minHeight
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = UIParent:GetWidth()
+		local maxWidth = floor(UIParent:GetWidth())
 		local maxHeight = 24
 
 		return maxWidth, maxHeight

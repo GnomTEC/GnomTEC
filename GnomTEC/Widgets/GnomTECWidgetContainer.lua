@@ -134,10 +134,10 @@ function GnomTECWidgetContainer(init)
 		end
 		
 		if (minWidth > UIParent:GetWidth()) then
-			minWidth = UIParent:GetWidth()
+			minWidth = floor(UIParent:GetWidth())
 		end
 		if (minHeight > UIParent:GetHeight()) then
-			minHeight = UIParent:GetHeight()
+			minHeight = floor(UIParent:GetHeight())
 		end
 
 		return minWidth, minHeight
@@ -156,10 +156,10 @@ function GnomTECWidgetContainer(init)
 		end
 
 		if ((maxWidth > UIParent:GetWidth()) or (0 == maxWidth)) then
-			maxWidth = UIParent:GetWidth()
+			maxWidth = floor(UIParent:GetWidth())
 		end
 		if ((maxHeight > UIParent:GetHeight()) or (0 == maxHeight)) then
-			maxHeight = UIParent:GetHeight()
+			maxHeight = floor(UIParent:GetHeight())
 		end
 		
 		return maxWidth, maxHeight
