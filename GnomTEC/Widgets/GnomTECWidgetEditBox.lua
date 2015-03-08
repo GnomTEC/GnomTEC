@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetEditBox
--- Version: 6.0.3.1
+-- Version: 6.1.0.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -219,6 +219,12 @@ function GnomTECWidgetEditBox(init)
 	function self.GetText()
 		return protected.editBoxFrame:GetText()
 	end
+
+	function self.SetFocus()
+		protected.editBoxFrame:SetFocus()
+	end
+	
+	
 	
 	-- constructor
 	do

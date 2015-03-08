@@ -30,12 +30,13 @@ local addonInfo = {
 	["Name"] = "GnomTEC (Addon Framework)",
 	["Description"] = L["L_DESCRIPTION"],	
 	["Version"] = "6.1.0.1",
-	["Date"] = "2015-02-25",
+	["Date"] = "2015-03-08",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
 	["Copyright"] = "© 2014-2015 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",
+	["FrameworkRevision"] = 1
 }
 
 -- ----------------------------------------------------------------------

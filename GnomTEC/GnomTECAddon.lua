@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECAddon Class
--- Version: 6.0.3.1
+-- Version: 6.1.0.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -48,6 +48,7 @@ local LOG_DEBUG 	= 4
 -- ----------------------------------------------------------------------
 -- Class Static Variables (local)
 -- ----------------------------------------------------------------------
+class.FrameworkRevision = 1						-- update this every release
 class.lastUID = class.lastUID or 0
 class.dataObjects = class.dataObjects or {}
 
@@ -69,20 +70,40 @@ local function emptynil( x ) return x ~= "" and x or nil end
 -- ----------------------------------------------------------------------
 --[[
 	addonInfo - table with addon informations as string
-		["Name"] 			- name
-		["Description"]	- decription
-		["Version"] 		- version
-		["Date"] = 			- date
-		["Author"] 			- author
-		["Email"] 			- contact email
-		["Website"] 		- URL to addon website
-		["Copyright"] 		- copyright information
-		["License"] 		- license information	
+		["Name"] 					- name
+		["Description"]			- decription
+		["Version"] 				- version
+		["Date"] = 					- date
+		["Author"] 					- author
+		["Email"] 					- contact email
+		["Website"] 				- URL to addon website
+		["Copyright"] 				- copyright information
+		["License"] 				- license information
+		["FrameworkRevision"]	- revision of GnomTEC framework against addon was builded
+		
 --]]
 function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
+
 	-- call base class
 	local self, protected = GnomTECComm(addonTitle, addonInfo)
 	
+	-- check if framework is compatible for this addon and stop if not
+	if (addonInfo["FrameworkRevision"] > class.FrameworkRevision) then
+		protected.LogMessage(CLASS_CLASS, LOG_FATAL, "GnomTECAddon", [[Framework revision (%d) is smaller then needed from addon "%s" (%d)]], class.FrameworkRevision, addonInfo["Name"], addonInfo["FrameworkRevision"])
+
+		-- show the issue to user
+		StaticPopupDialogs["GNOMTEC_FRAMEWORKREVISION_ERROR"] = {
+  			text = L["L_ERROR_FRAMEWORKREVISION"],
+  			button1 = "Ok",
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+  			preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+		}
+		StaticPopup_Show ("GNOMTEC_FRAMEWORKREVISION_ERROR")
+		return nil
+	end
+
 	local defaultsDb = defaultsDb
 	local optionsArray = optionsArray
 		

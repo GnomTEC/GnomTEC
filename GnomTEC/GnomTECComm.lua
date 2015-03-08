@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 6.0.3.1
+-- Version: 6.1.0.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -592,6 +592,7 @@ class.aceEvent:RegisterEvent("CHAT_MSG_YELL", _CHAT_MSG_YELL);
 		["Website"] 	- URL to addon website
 		["Copyright"] 	- copyright information
 		["License"] 	- license information
+		["FrameworkRevision"]	- revision of GnomTEC framework against addon was builded
 --]]
 function GnomTECComm(addonTitle, addonInfo)
 	-- call base class

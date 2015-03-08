@@ -29,3 +29,4 @@ local L = AceLocale:NewLocale("GnomTEC", "enUS", true)
 if not L then return end
 
 L["L_OPTIONS_TITLE"] = "GnomTEC Framework\n\n"
+L["L_ERROR_FRAMEWORKREVISION"] = "The installed version of GnomTEC framework seems to be to old for some addons.\n\nThese addons won't be started until you update the framework.\n\nSee http://www.curse.com/addons/wow/gnomtec for a newer version."

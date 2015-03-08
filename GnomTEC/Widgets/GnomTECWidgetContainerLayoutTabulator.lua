@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetContainerLayoutTabulator
--- Version: 6.0.3.1
+-- Version: 6.1.0.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************

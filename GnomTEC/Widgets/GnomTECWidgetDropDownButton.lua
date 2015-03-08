@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetDropDownButton
--- Version: 6.0.3.1
+-- Version: 6.1.0.1
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -165,6 +165,21 @@ function GnomTECWidgetDropDownButton(init)
 	function self.Enable()
 --		protected.widgetFrame:Enable()
 	end
+
+	function self.GetSelectedValue()
+		return protected.values[protected.selectedValue]
+	end
+
+	function self.SetSelectedValue(value)
+		for i, v in ipairs(protected.values) do
+    		if v == value then
+    			protected.selectedValue = i
+ 				UIDropDownMenu_SetSelectedValue(protected.widgetFrame, protected.selectedValue)
+ 				break
+			end
+		end
+	end
+	
 	
 	-- constructor
 	do
