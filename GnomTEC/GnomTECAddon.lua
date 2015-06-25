@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECAddon Class
--- Version: 6.1.0.1
+-- Version: 6.1.2.2
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -48,7 +48,7 @@ local LOG_DEBUG 	= 4
 -- ----------------------------------------------------------------------
 -- Class Static Variables (local)
 -- ----------------------------------------------------------------------
-class.FrameworkRevision = 1						-- update this every release
+class.FrameworkRevision = 2						-- update this every release
 class.lastUID = class.lastUID or 0
 class.dataObjects = class.dataObjects or {}
 

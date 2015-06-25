@@ -72,7 +72,11 @@
 	<Include file="Widgets\GnomTECWidgetTextureButton.lua"/>
 
 	<!-- GnomTEC Framework Classes -->
+	<Include file="Classes\GnomTECClassCharacter.lua"/>
+
+	<!-- GnomTEC Framework Addon Main Class -->
 	<Include file="GnomTECAddon.lua"/>
+
 </Ui>
 
 

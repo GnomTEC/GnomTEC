@@ -1,4 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 6.2.0.2 (2015-06-25)
+* Added new class GnomTECClassCharacter
+* Updated TOC for new WoW patch 6.2.0
+
 === 6.1.0.1 (2015-03-08)
 * Initial version

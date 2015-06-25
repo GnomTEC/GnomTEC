@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 6.1.0.1
+-- Version: 6.1.2.2
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -440,7 +440,7 @@ end
 
 local function _UPDATE_MOUSEOVER_UNIT(eventName)
 	if (not UnitIsUnit("mouseover", "player")) then
-		if (Fixed_UnitIsPlayer(unitId)) then
+		if (Fixed_UnitIsPlayer("mouseover")) then
 			local unitName = fullunitname(UnitName("mouseover"))
 			-- Trigger data exchange with unit
 			_commRequestTimestamps(unitName)
