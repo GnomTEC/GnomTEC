@@ -1,6 +1,6 @@
 -- **********************************************************************
 -- GnomTEC Localization - deDE
--- Version: 6.0.3.1
+-- Version: 6.2.2.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTEC-deDE-1.0", 2
+local MAJOR, MINOR = "GnomTEC-deDE-1.0", 3
 local localization, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not localization then return end -- No Upgrade needed.

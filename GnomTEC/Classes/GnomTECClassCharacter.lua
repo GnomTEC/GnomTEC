@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECClassCharacter
--- Version: 6.1.2.2
+-- Version: 6.2.2.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 2
+local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 3
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -54,7 +54,7 @@ class.characters = {}
 -- Class Startup Initialization
 -- ----------------------------------------------------------------------
 class.aceEvent = class.aceEvent or LibStub("AceEvent-3.0")
-
+class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
 -- ----------------------------------------------------------------------
 -- Helper Functions (local)
 -- ----------------------------------------------------------------------
@@ -114,42 +114,49 @@ end
 local function _LogMessage(logLevel, message, ...)
 end
 
-local function _GetUnitPosition(unitName)
-
-	if (GetNumGroupMembers() > 1) then
-		for i=1, GetNumGroupMembers(), 1 do
-			if (unitName == fullunitname(UnitName("raid"..i))) then
-				return UnitPosition("raid"..i)
-			end	
-		end
-	end
-	
-	return nil	
-end
-
-local function _GetUnitDistance(unitName)
-
+local function _UpdateUnitPosition(unitName, unitPosition)
+	local posX = nil, posY, posZ, terrainMapID
+	local distance = nil
 	local prefix = "party"
 	
 	if (IsInRaid()) then
 		prefix = "raid"
 	end
-	
 	if (GetNumGroupMembers() > 1) then
 		for i=1, GetNumGroupMembers(), 1 do
 			if (unitName == fullunitname(UnitName(prefix..i))) then
-				local distanceSquared, checkedDistance = UnitDistanceSquared(prefix..i)
-				
-				if (checkedDistance) then
-					return distanceSquared^0.5
-				else
-					return nil
+				posX, posY, posZ, terrainMapID = UnitPosition(prefix..i)
+				if (posX) then
+					local distanceSquared, checkedDistance = UnitDistanceSquared(prefix..i)
+					if (checkedDistance) then
+						distance = distanceSquared^0.5
+					else
+						posX = nil
+					end
 				end
 			end	
 		end
 	end
 	
-	return nil	
+	if (not posX) then
+		if (unitName == fullunitname(UnitName("player"))) then
+			posX, posY, posZ, terrainMapID = UnitPosition("player")
+			if (posX) then
+				distance = 0
+			end
+		end	
+	end
+	
+	if (posX) then
+		unitPosition.posX = posX
+		unitPosition.posY = posY
+		unitPosition.posZ = posZ
+		unitPosition.terrainMapID = terrainMapID
+		unitPosition.distance = distance
+		return true
+	end
+	
+	return false
 end
 
 -- ----------------------------------------------------------------------
@@ -277,19 +284,19 @@ end
 -- ----------------------------------------------------------------------
 -- Register Class Static Event Handler (local)
 -- ----------------------------------------------------------------------
-class.aceEvent:RegisterEvent("UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
-class.aceEvent:RegisterEvent("CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
-class.aceEvent:RegisterEvent("CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
-class.aceEvent:RegisterEvent("CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
-class.aceEvent:RegisterEvent("CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
-class.aceEvent:RegisterEvent("CHAT_MSG_GUILD", _CHAT_MSG_GUILD);
-class.aceEvent:RegisterEvent("CHAT_MSG_OFFICER", _CHAT_MSG_OFFICER);
-class.aceEvent:RegisterEvent("CHAT_MSG_PARTY", _CHAT_MSG_PARTY);
-class.aceEvent:RegisterEvent("CHAT_MSG_RAID", _CHAT_MSG_RAID);
-class.aceEvent:RegisterEvent("CHAT_MSG_SAY", _CHAT_MSG_SAY);
-class.aceEvent:RegisterEvent("CHAT_MSG_TEXT_EMOTE", _CHAT_MSG_TEXT_EMOTE);
-class.aceEvent:RegisterEvent("CHAT_MSG_WHISPER", _CHAT_MSG_WHISPER);
-class.aceEvent:RegisterEvent("CHAT_MSG_YELL", _CHAT_MSG_YELL);
+class.aceEvent.RegisterEvent(class,"UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_GUILD", _CHAT_MSG_GUILD);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_OFFICER", _CHAT_MSG_OFFICER);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_PARTY", _CHAT_MSG_PARTY);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_RAID", _CHAT_MSG_RAID);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_SAY", _CHAT_MSG_SAY);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_TEXT_EMOTE", _CHAT_MSG_TEXT_EMOTE);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_WHISPER", _CHAT_MSG_WHISPER);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_YELL", _CHAT_MSG_YELL);
 		
 -- ----------------------------------------------------------------------
 -- Class
@@ -317,6 +324,13 @@ function GnomTECClassCharacter(unitName)
 	-- they are faster than table access, and are truly private, so the code that uses your class can't get them
 	-- local field
 	local unitName = unitName
+	local	unitPosition = {
+		posX = nil,
+		posY = nil,
+		posZ = nil,
+		terrainMapID = nil,
+		distance = nil
+	}
 			
 	-- private methods
 	-- local function f()
@@ -330,13 +344,45 @@ function GnomTECClassCharacter(unitName)
 		protected.LogMessage(CLASS_CLASS, logLevel, "GnomTECClassCharacter", message, ...)
 	end
 	
-	function self.GetPosition()
-		return _GetUnitPosition(unitName)
+	function self.GetPosition(notCached)
+		local updated = _UpdateUnitPosition(unitName, unitPosition)
+		
+		if (updated or (not notCached)) then
+			return unitPosition.posX, unitPosition.posY, unitPosition.posZ, unitPosition.terrainMapID
+		else
+			return nil
+		end
 	end
 
-	function self.GetDistance()
-		return _GetUnitDistance(unitName)
+	function self.GetDistance(notCached)
+		local updated = _UpdateUnitPosition(unitName, unitPosition)
+
+		if (updated or (not notCached)) then
+			return unitPosition.distance
+		else
+			return nil
+		end
 	end
+	
+	function self.SetPosition(posX, posY, posZ, terrainMapID)
+		local playerPosX, playerPosY, playerPosZ, playerTerrainMapID
+		local distance
+
+		playerPosX, playerPosY, playerPosZ, playerTerrainMapID = UnitPosition("player")
+		
+		if (playerPosX and posX and (playerTerrainMapID == terrainMapID)) then
+			distance = ((playerPosX - posX)^2 + (playerPosY - posY)^2)^0.5
+		else
+			distance = nil
+		end
+
+		unitPosition.posX = posX
+		unitPosition.posY = posY
+		unitPosition.posZ = posZ
+		unitPosition.terrainMapID = terrainMapID
+		unitPosition.distance = distance
+	end
+
 	
 	-- constructor
 	do

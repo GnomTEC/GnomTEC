@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 6.1.2.2
+-- Version: 6.2.2.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 2
+local MAJOR, MINOR = "GnomTECComm-1.0", 3
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -57,9 +57,9 @@ local COMM_REQ_TIMESTAMPS		= "?"		-- data = nil
 local COMM_RES_TIMESTAMPS		= "!"		-- data = {t_addons, t_data}
 local COMM_REQ_ADDONS	 		= "?A"	-- data = {t_addons}
 local COMM_RES_ADDONS			= "!A"	-- data = {t_addons, addons[] or nil}
-local COMM_REQ_DATA	 			= "?D"	-- data = {t_adddondata, addonTitle}
-local COMM_RES_DATA				= "!D"	-- data = {t_addondata, addonTitle, data or nil}
-
+local COMM_REQ_DATA	 			= "?D"	-- data = {addonTitle, t_addondata}
+local COMM_RES_DATA				= "!D"	-- data = {addonTitle, t_addondata, data or nil}
+local COMM_BROADCAST				= "!B"	-- data = {addonTitle, data}
 
 -- ----------------------------------------------------------------------
 -- Class Static Variables
@@ -73,6 +73,10 @@ class.commRequestReceiveBytes=  class.commRequestReceiveBytes or 0
 class.commResponseCount = class.commResponseCount or 0
 class.commResponseSendBytes = class.commResponseSendBytes or 0
 class.commResponseReceiveBytes = class.commResponseReceiveBytes or 0
+class.commBroadcastSendCount = class.commBroadcastSendCount or 0
+class.commBroadcastSendBytes = class.commBroadcastSendBytes or 0	
+class.commBroadcastReceiveCount = class.commBroadcastReceiveCount or 0	
+class.commBroadcastReceiveBytes = class.commBroadcastReceiveBytes or 0	
 
 
 --[[
@@ -217,6 +221,18 @@ local function _commStatisticLogReceive(isRequest, count, numBytes, addonTitle, 
 	class.commReceiveBytes = class.commReceiveBytes + numBytes
 end
 
+local function _commStatisticLogBroadcastSend(numBytes, addonTitle, distribution, target)
+	class.commBroadcastSendCount = class.commBroadcastSendCount + 1
+	class.commBroadcastSendBytes = class.commBroadcastSendBytes + numBytes	
+	class.commSendBytes = class.commSendBytes + numBytes	
+end
+
+local function _commStatisticLogBroadcastReceive(numBytes, addonTitle, unitName)
+	class.commBroadcastReceiveCount = class.commBroadcastReceiveCount + 1
+	class.commBroadcastReceiveBytes = class.commBroadcastReceiveBytes + numBytes
+	class.commReceiveBytes = class.commReceiveBytes + numBytes
+end
+
 local function _commGetUnitInfo(target)
 	local unitInfo = class.commUnitInformations[target]
 	
@@ -277,6 +293,15 @@ local function _commSend(addonTitle, target, comm, ...)
 	class.aceComm:SendCommMessage(ADDONMESSAGE_PREFIX, serialized, "WHISPER", target, "BULK")	
 end
 
+local function _commBroadcast(addonTitle, data, distribution, target)
+	local serialized = class.aceSerializer:Serialize(COMM_BROADCAST, addonTitle, data)
+	local bytes = string.len(serialized)
+
+	_commStatisticLogBroadcastSend(bytes, addonTitle, distribution, target)
+	
+	class.aceComm:SendCommMessage(ADDONMESSAGE_PREFIX, serialized, distribution, target, "BULK")	
+end
+
 local function _commRequestTimestamps(target, force)
 	local now = GetTime()
 	local unitInfo = _commGetUnitInfo(target)
@@ -329,7 +354,7 @@ local function _OnCommReceived(prefix, message, distribution, sender)
 		local bytes = string.len(message)
 		local messageParts = {class.aceSerializer:Deserialize(message)}
 		if (not messageParts[1]) then
-			_LogMessage(LOG_ERROR,"Could not deserialize communication message: %s from ",(messageParts[2] or "???"), sender)
+			_LogMessage(LOG_ERROR,"Could not deserialize communication message: %s from %s",(messageParts[2] or "???"), sender)
 		else
 			local comm = messageParts[2]
 
@@ -431,6 +456,19 @@ local function _OnCommReceived(prefix, message, distribution, sender)
 				end
 				GnomTEC.callbacks:Fire("GNOMTEC_UPDATE_STATICDATA", sender, addonTitle, data)
 --]]
+			elseif (COMM_BROADCAST == comm) then
+				local addonTitle = messageParts[3]
+				local data = messageParts[4] or ""
+				if (not addonTitle) then
+					_commStatisticLogBroadcastReceive(bytes, "???", sender)
+					_LogMessage(LOG_ERROR,"Comm broadcast: no addonTitle received".." from %s", sender)
+				else
+					_commStatisticLogBroadcastReceive(bytes, addonTitle, sender)
+					if (class.addonsList[addonTitle]) then
+						local self = class.addonsList[addonTitle]["Self"]
+						self.SafeCall(self.OnBroadcast, data, sender)
+					end
+				end
 			else
 				_LogMessage(LOG_WARN,"Unknown communication request or response: %s from %s", (comm or "???"), sender)
 			end
@@ -565,19 +603,19 @@ else
 	class.aceComm:RegisterComm(ADDONMESSAGE_PREFIX, _OnCommReceived)
 end
 
-class.aceEvent:RegisterEvent("UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
-class.aceEvent:RegisterEvent("CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
-class.aceEvent:RegisterEvent("CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
-class.aceEvent:RegisterEvent("CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
-class.aceEvent:RegisterEvent("CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
-class.aceEvent:RegisterEvent("CHAT_MSG_GUILD", _CHAT_MSG_GUILD);
-class.aceEvent:RegisterEvent("CHAT_MSG_OFFICER", _CHAT_MSG_OFFICER);
-class.aceEvent:RegisterEvent("CHAT_MSG_PARTY", _CHAT_MSG_PARTY);
-class.aceEvent:RegisterEvent("CHAT_MSG_RAID", _CHAT_MSG_RAID);
-class.aceEvent:RegisterEvent("CHAT_MSG_SAY", _CHAT_MSG_SAY);
-class.aceEvent:RegisterEvent("CHAT_MSG_TEXT_EMOTE", _CHAT_MSG_TEXT_EMOTE);
-class.aceEvent:RegisterEvent("CHAT_MSG_WHISPER", _CHAT_MSG_WHISPER);
-class.aceEvent:RegisterEvent("CHAT_MSG_YELL", _CHAT_MSG_YELL);
+class.aceEvent.RegisterEvent(class,"UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_GUILD", _CHAT_MSG_GUILD);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_OFFICER", _CHAT_MSG_OFFICER);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_PARTY", _CHAT_MSG_PARTY);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_RAID", _CHAT_MSG_RAID);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_SAY", _CHAT_MSG_SAY);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_TEXT_EMOTE", _CHAT_MSG_TEXT_EMOTE);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_WHISPER", _CHAT_MSG_WHISPER);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_YELL", _CHAT_MSG_YELL);
 		
 -- ----------------------------------------------------------------------
 -- Class
@@ -607,6 +645,7 @@ function GnomTECComm(addonTitle, addonInfo)
 	-- private fields are implemented using locals
 	-- they are faster than table access, and are truly private, so the code that uses your class can't get them
 	-- local field
+	local addonTitle = addonTitle
 		
 	-- private methods
 	-- local function f()
@@ -630,6 +669,10 @@ function GnomTECComm(addonTitle, addonInfo)
 			commResponseCount = class.commResponseCount,
 			commResponseSendBytes = class.commResponseSendBytes,
 			commResponseReceiveBytes = class.commResponseReceiveBytes,
+			commBroadcastSendCount = class.commBroadcastSendCount,
+			commBroadcastSendBytes = class.commBroadcastSendBytes,
+			commBroadcastReceiveCount = class.commBroadcastReceiveCount,
+			commBroadcastReceiveBytes = class.commBroadcastReceiveBytes,
 		}
 		return statistics
 	end
@@ -664,6 +707,13 @@ function GnomTECComm(addonTitle, addonInfo)
 		end
 	end
 
+	function self.Broadcast(data, distribution, target)
+		protected.LogMessage(CLASS_CLASS, LOG_DEBUG, "GnomTECComm", "Send broadcast for %s to %s (per %s)", addonTitle, target or "---", distribution or "---")
+		_commBroadcast(addonTitle, data, distribution, target)
+	end
+	
+	
+
 	-- constructor
 	do
 		_LogMessage = self.LogMessage
@@ -671,6 +721,7 @@ function GnomTECComm(addonTitle, addonInfo)
 		class.addonsList[addonTitle] = {
 			["Addon"] = addonTitle,
 			["AddonInfo"] = addonInfo,
+			["Self"] = self
 		}		
 		for idx, value in ipairs(class.addonsListReceivers) do
 			value.func(self.pairsCommAddonsList)
