@@ -564,6 +564,11 @@ function _CHAT_MSG_SAY(eventName, message, sender)
 	if (emptynil(sender)) then
 		_commRequestTimestamps(sender)
 	end
+	
+	for key, value in pairs(class.addonsList) do
+		local self = value["Self"]
+		self.SafeCall(self.OnSay, message, sender)
+	end
 end
 
 function _CHAT_MSG_TEXT_EMOTE(eventName, message, sender)	
@@ -708,11 +713,24 @@ function GnomTECComm(addonTitle, addonInfo)
 	end
 
 	function self.Broadcast(data, distribution, target)
-		protected.LogMessage(CLASS_CLASS, LOG_DEBUG, "GnomTECComm", "Send broadcast for %s to %s (per %s)", addonTitle, target or "---", distribution or "---")
 		_commBroadcast(addonTitle, data, distribution, target)
 	end
 	
+	function self.Say(text)
+		SendChatMessage(text, "SAY")
+	end
+
+	function self.Yell(text)
+		SendChatMessage(text, "YELL")
+	end
 	
+	function self.Emote(text)
+		SendChatMessage(text, "EMOTE")
+	end
+
+	function self.Whisper(text, target)
+		SendChatMessage(text, "WHISPER", target)
+	end
 
 	-- constructor
 	do

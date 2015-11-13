@@ -199,6 +199,10 @@ function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
 		aceAddon:RegisterChatCommand(command, func)
 	end
 	
+	function self.ScheduleTimer(func, delay)
+		aceAddon:ScheduleTimer(func, delay)
+	end
+	
 	-- constructor
 	do
 		class.lastUID = class.lastUID + 1
@@ -261,7 +265,7 @@ function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
 			},
 		}
 		
-		aceAddon = LibStub("AceAddon-3.0"):NewAddon(addonTitle, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0", "AceComm-3.0", "AceSerializer-3.0")
+		aceAddon = LibStub("AceAddon-3.0"):NewAddon(addonTitle, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0", "AceComm-3.0", "AceSerializer-3.0", "AceTimer-3.0")
 		LibStub("AceConfig-3.0"):RegisterOptionsTable(addonInfo["Name"].." Main", aceOptionsMain)
 		LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonInfo["Name"].." Main", addonInfo["Name"]);
 
