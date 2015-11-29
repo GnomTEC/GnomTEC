@@ -1,5 +1,5 @@
 ﻿-- **********************************************************************
--- GnomTECWidgetText
+-- GnomTECWidgetDeviceLED
 -- Version: 6.2.2.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetText-1.0", 3
+local MAJOR, MINOR = "GnomTECWidgetDeviceLED-1.0", 3
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -58,15 +58,13 @@ local LOG_DEBUG 	= 4
 -- ----------------------------------------------------------------------
 -- Helper Functions (local)
 -- ----------------------------------------------------------------------
--- function which returns also nil for empty strings
-local function emptynil( x ) return x ~= "" and x or nil end
 
 
 -- ----------------------------------------------------------------------
 -- Widget Class
 -- ----------------------------------------------------------------------
 
-function GnomTECWidgetText(init)
+function GnomTECWidgetDeviceLED(init)
 
 	-- call base class
 	local self, protected = GnomTECWidget(init)
@@ -76,15 +74,17 @@ function GnomTECWidgetText(init)
 
 	-- protected fields go in the protected table
 	-- protected.field = value
-	protected.text = nil
-	protected.textFontString = nil
 	
 	-- private fields are implemented using locals
 	-- they are faster than table access, and are truly private, so the code that uses your class can't get them
 	-- local field
+	local size = 32
 	
 	-- private methods
 	-- local function f()
+	local function OnClick(frame, button)
+		self.SafeCall(self.OnClick, self, button)
+	end
 
 	-- protected methods
 	-- function protected.f()
@@ -92,106 +92,86 @@ function GnomTECWidgetText(init)
 	-- public methods
 	-- function self.f()
 	function self.LogMessage(logLevel, message, ...)
-		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetText", message, ...)
+		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetDeviceLED", message, ...)
 	end
 
 	function self.GetMinReseize()
-		local minWidth = 30
-		local minHeight = 16
-		
-		if (protected.textFontString) then
-			minWidth = ceil(protected.textFontString:GetStringWidth() + 30)
-			minHeight = ceil(protected.textFontString:GetStringHeight() + 4)
-		end
+		local minWidth = size
+		local minHeight = size
 		
 		return minWidth, minHeight
 	end
 
 	function self.GetMaxReseize()		
-		local maxWidth = floor(UIParent:GetWidth())
-		local maxHeight = floor(UIParent:GetHeight())
+		local maxWidth = size
+		local maxHeight = size
 
 		return maxWidth, maxHeight
 	end
 
 	function self.IsHeightDependingOnWidth()
-		return false
+		return false -- should be true when layouter is complete implemented
 	end
 
 	function self.IsWidthDependingOnHeight()
-		return false
+		return false -- should be true when layouter is complete implemented
 	end
 
 	function self.ResizeByWidth(pixelWidth, pixelHeight)
-		protected.widgetFrame:SetWidth(pixelWidth)
-		protected.widgetFrame:SetHeight(pixelHeight)
+		protected.widgetFrame:SetWidth(size)
+		protected.widgetFrame:SetHeight(size)
 
-		return pixelWidth, pixelHeight
+		return size, size
 	end
 
 	function self.ResizeByHeight(pixelWidth, pixelHeight)
-		protected.widgetFrame:SetWidth(pixelWidth)
-		protected.widgetFrame:SetHeight(pixelHeight)
+		protected.widgetFrame:SetWidth(size)
+		protected.widgetFrame:SetHeight(size)
 
-		return pixelWidth, pixelHeight
+		return size, size
 	end
 	
-	function self.SetText(text)
-		protected.text = emptynil(text)
-		if (protected.textFontString) then
-			protected.textFontString:SetText(protected.text or "")
-			self.TriggerResize(self, 0, 0)
-		end
+	function self.On()
+		protected.widgetFrame:SetChecked(true)
+	end
+
+	function self.Off()
+		protected.widgetFrame:SetChecked(false)
 	end
 	
-	function self.GetText()
-		return emptynil(protected.text)
-	end	
+	function self.IsOn()
+		return protected.widgetFrame:GetChecked()
+	end
+
 	
 	-- constructor
 	do
 		if (not init) then
 			init = {}
 		end
-		
-		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent)
+				
+		local widgetFrame = CreateFrame("CheckButton", protected.widgetUID, UIParent, "T_GNOMTECWIDGETDEVICELED")
 		widgetFrame:Hide()
 
-		local textFontString = widgetFrame:CreateFontString()
-		
 		protected.widgetFrame = widgetFrame 
-		protected.textFontString = textFontString 
 		
 		-- should be configurable later eg. saveable
 		widgetFrame:SetPoint("CENTER")		
-		local w, r = self.GetWidth()
-		if (not r) then
-			widgetFrame:SetWidth(w)		
-		else
-			widgetFrame:SetWidth("32")		
-		end
-		local h, r = self.GetHeight()
-		if (not r) then
-			widgetFrame:SetHeight(h)		
-		else
-			widgetFrame:SetHeight("14")
+		widgetFrame:SetWidth(size)		
+		widgetFrame:SetHeight(size)
+
+		-- a LED should not be clickable
+		widgetFrame:Disable()
+		
+		if (init.on) then
+			self.On()
 		end
 		
-		textFontString:SetFontObject(init.fontObject or GameFontNormal)
-		textFontString:SetJustifyH(init.justifyH or "CENTER")
-		textFontString:SetTextColor(1.0, 1.0, 1.0, 1.0)
-		textFontString:SetWidth("32")		
-		textFontString:SetHeight("14")
-		textFontString:SetPoint("TOPLEFT")
-		textFontString:SetPoint("BOTTOMRIGHT")
-
-		self.SetText(init.text)
-						
 		if (init.parent) then
 			init.parent.AddChild(self, protected)
 		end
 
-		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetText", "New instance created (%s)", protected.UID)
+		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetDeviceLED", "New instance created (%s)", protected.UID)
 	end
 	
 	-- return the instance

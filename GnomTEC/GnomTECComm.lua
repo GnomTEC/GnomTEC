@@ -486,7 +486,7 @@ local function _UPDATE_MOUSEOVER_UNIT(eventName)
  	end
  end
  
- function _CHAT_MSG_BATTLEGROUND(eventName, message, sender)	
+ function _CHAT_MSG_INSTANCE_CHAT(eventName, message, sender)	
 	-- Trigger data exchange with sender
 	sender = fullunitname(sender)
 	
@@ -564,11 +564,6 @@ function _CHAT_MSG_SAY(eventName, message, sender)
 	if (emptynil(sender)) then
 		_commRequestTimestamps(sender)
 	end
-	
-	for key, value in pairs(class.addonsList) do
-		local self = value["Self"]
-		self.SafeCall(self.OnSay, message, sender)
-	end
 end
 
 function _CHAT_MSG_TEXT_EMOTE(eventName, message, sender)	
@@ -609,7 +604,7 @@ else
 end
 
 class.aceEvent.RegisterEvent(class,"UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
-class.aceEvent.RegisterEvent(class,"CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
+class.aceEvent.RegisterEvent(class,"CHAT_MSG_INSTANCE_CHAT", _CHAT_MSG_INSTANCE_CHAT);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
@@ -716,22 +711,6 @@ function GnomTECComm(addonTitle, addonInfo)
 		_commBroadcast(addonTitle, data, distribution, target)
 	end
 	
-	function self.Say(text)
-		SendChatMessage(text, "SAY")
-	end
-
-	function self.Yell(text)
-		SendChatMessage(text, "YELL")
-	end
-	
-	function self.Emote(text)
-		SendChatMessage(text, "EMOTE")
-	end
-
-	function self.Whisper(text, target)
-		SendChatMessage(text, "WHISPER", target)
-	end
-
 	-- constructor
 	do
 		_LogMessage = self.LogMessage

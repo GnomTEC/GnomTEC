@@ -1,0 +1,42 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+	<!-- T_GNOMTECWIDGETDEVICEPLAQUE: Standard template for GnomTECWidgetDevicePlaque -->
+	<Frame name="T_GNOMTECWIDGETDEVICEPLAQUE" virtual="true">
+		<Size x="64" y="32" />
+		<ResizeBounds>
+         <minResize>
+         	<AbsDimension x="64" y="32"/>
+      	</minResize>
+         <maxResize>
+         	<RelDimension x="1.0" y="1.0"/>
+      	</maxResize>
+      </ResizeBounds>
+      <Layers>
+      	<Layer>
+      		<Texture file="Interface/AddOns/GnomTEC/GnomTEC/Textures/device_plaque_left">
+      			<Size x="32" y="32" />
+      			<Anchors>
+      				<Anchor point="TOPLEFT" />
+      			</Anchors>      				
+      		</Texture>
+      		<Texture file="Interface/AddOns/GnomTEC/GnomTEC/Textures/device_plaque_center">
+      			<Size x="32" y="32" />
+      			<Anchors>
+      				<Anchor point="TOPLEFT">
+      					<Offset x="30" y="0" />
+      				</Anchor>
+      				<Anchor point="RIGHT">
+      					<Offset x="-30" y="0" />
+      				</Anchor>
+      			</Anchors>      				
+      		</Texture>
+      		<Texture file="Interface/AddOns/GnomTEC/GnomTEC/Textures/device_plaque_right">
+      			<Size x="32" y="32" />
+      			<Anchors>
+      				<Anchor point="TOPRIGHT" />
+      			</Anchors>
+      		</Texture>
+      	</Layer>
+      </Layers>
+	</Frame>
+</Ui>

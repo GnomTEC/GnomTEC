@@ -1,5 +1,5 @@
 ﻿-- **********************************************************************
--- GnomTECWidgetText
+-- GnomTECWidgetDevicePlaque
 -- Version: 6.2.2.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetText-1.0", 3
+local MAJOR, MINOR = "GnomTECWidgetDevicePlaque-1.0", 3
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -66,7 +66,7 @@ local function emptynil( x ) return x ~= "" and x or nil end
 -- Widget Class
 -- ----------------------------------------------------------------------
 
-function GnomTECWidgetText(init)
+function GnomTECWidgetDevicePlaque(init)
 
 	-- call base class
 	local self, protected = GnomTECWidget(init)
@@ -92,16 +92,16 @@ function GnomTECWidgetText(init)
 	-- public methods
 	-- function self.f()
 	function self.LogMessage(logLevel, message, ...)
-		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetText", message, ...)
+		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetDevicePlaque", message, ...)
 	end
 
 	function self.GetMinReseize()
-		local minWidth = 30
-		local minHeight = 16
+		local minWidth = 64
+		local minHeight = 32
 		
 		if (protected.textFontString) then
-			minWidth = ceil(protected.textFontString:GetStringWidth() + 30)
-			minHeight = ceil(protected.textFontString:GetStringHeight() + 4)
+			minWidth = max(minWidth, ceil(protected.textFontString:GetStringWidth() + 32))
+			minHeight = 32
 		end
 		
 		return minWidth, minHeight
@@ -109,7 +109,7 @@ function GnomTECWidgetText(init)
 
 	function self.GetMaxReseize()		
 		local maxWidth = floor(UIParent:GetWidth())
-		local maxHeight = floor(UIParent:GetHeight())
+		local maxHeight = 32
 
 		return maxWidth, maxHeight
 	end
@@ -145,7 +145,7 @@ function GnomTECWidgetText(init)
 	end
 	
 	function self.GetText()
-		return emptynil(protected.text)
+		return emptynil(protected.title)
 	end	
 	
 	-- constructor
@@ -154,7 +154,7 @@ function GnomTECWidgetText(init)
 			init = {}
 		end
 		
-		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent)
+		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent, "T_GNOMTECWIDGETDEVICEPLAQUE")
 		widgetFrame:Hide()
 
 		local textFontString = widgetFrame:CreateFontString()
@@ -168,13 +168,13 @@ function GnomTECWidgetText(init)
 		if (not r) then
 			widgetFrame:SetWidth(w)		
 		else
-			widgetFrame:SetWidth("32")		
+			widgetFrame:SetWidth("64")		
 		end
 		local h, r = self.GetHeight()
 		if (not r) then
 			widgetFrame:SetHeight(h)		
 		else
-			widgetFrame:SetHeight("14")
+			widgetFrame:SetHeight("32")
 		end
 		
 		textFontString:SetFontObject(init.fontObject or GameFontNormal)
@@ -191,7 +191,7 @@ function GnomTECWidgetText(init)
 			init.parent.AddChild(self, protected)
 		end
 
-		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetText", "New instance created (%s)", protected.UID)
+		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetDevicePlaque", "New instance created (%s)", protected.UID)
 	end
 	
 	-- return the instance

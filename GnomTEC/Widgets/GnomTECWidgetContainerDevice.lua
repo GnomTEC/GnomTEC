@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
--- GnomTECWidgetContainerToolbox
--- Version: 6.2.2.3
+-- GnomTECWidgetContainerDevice
+-- Version: 6.2.3.3
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetContainerToolbox-1.0", 3
+local MAJOR, MINOR = "GnomTECWidgetContainerDevice-1.0", 3
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -65,7 +65,7 @@ local function emptynil( x ) return x ~= "" and x or nil end
 -- Widget Class
 -- ----------------------------------------------------------------------
 
-function GnomTECWidgetContainerToolbox(init)
+function GnomTECWidgetContainerDevice(init)
 
 	-- call base class
 	local self, protected = GnomTECWidgetContainer(init)
@@ -139,7 +139,7 @@ function GnomTECWidgetContainerToolbox(init)
 	-- public methods
 	-- function self.f()
 	function self.LogMessage(logLevel, message, ...)
-		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetContainerToolbox", message, ...)
+		protected.LogMessage(CLASS_WIDGET, logLevel, "GnomTECWidgetContainerDevice", message, ...)
 	end
 	
 	local base_AddChild = self.AddChild
@@ -167,15 +167,15 @@ function GnomTECWidgetContainerToolbox(init)
 	function self.GetMinReseize()
 		local minWidth, minHeight = base_GetMinReseize()
 		
-		minWidth = minWidth + 8
-		minHeight = minHeight + 8
+		minWidth = minWidth + 48
+		minHeight = minHeight + 48
 		
-		if (minWidth < 16) then
-			minWidth = 16
+		if (minWidth < 48) then
+			minWidth = 48
 		end
 
-		if (minHeight < 16) then
-			minHeight = 16
+		if (minHeight < 48) then
+			minHeight = 48
 		end
 		
 		return minWidth, minHeight
@@ -185,17 +185,17 @@ function GnomTECWidgetContainerToolbox(init)
 	function self.GetMaxReseize()
 		local maxWidth, maxHeight = base_GetMaxReseize()
 		
-		maxWidth = maxWidth + 8
-		maxHeight = maxHeight + 8
+		maxWidth = maxWidth + 48
+		maxHeight = maxHeight + 48
 		
-		if (maxWidth < 16) then
-			maxWidth = 16
+		if (maxWidth < 48) then
+			maxWidth = 48
 		elseif (maxWidth > UIParent:GetWidth()) then
 			maxWidth = floor(UIParent:GetWidth())
 		end
 
-		if (maxHeight < 16) then
-			maxHeight = 16
+		if (maxHeight < 48) then
+			maxHeight = 48
 		elseif (maxHeight > UIParent:GetHeight()) then
 			maxHeight = floor(UIParent:GetHeight())
 		end
@@ -205,9 +205,9 @@ function GnomTECWidgetContainerToolbox(init)
 
 	local base_ResizeByWidth = self.ResizeByWidth
 	function self.ResizeByWidth(pixelWidth, pixelHeight)
-		pixelWidth, pixelHeight = base_ResizeByWidth(pixelWidth - 8, pixelHeight - 8)
-		pixelWidth = pixelWidth + 8
-		pixelHeight = pixelHeight + 8
+		pixelWidth, pixelHeight = base_ResizeByWidth(pixelWidth - 48, pixelHeight - 48)
+		pixelWidth = pixelWidth + 48
+		pixelHeight = pixelHeight + 48
 		if (math.abs(self.GetPixelWidth() - pixelWidth) >= 1) then
 			protected.widgetFrame:SetWidth(pixelWidth)
 		end
@@ -219,9 +219,9 @@ function GnomTECWidgetContainerToolbox(init)
 
 	local base_ResizeByHeight = self.ResizeByHeight
 	function self.ResizeByHeight(pixelWidth, pixelHeight)
-		pixelWidth, pixelHeight = base_ResizeByHeight(pixelWidth - 8, pixelHeight - 8)
-		pixelWidth = pixelWidth + 8
-		pixelHeight = pixelHeight + 8
+		pixelWidth, pixelHeight = base_ResizeByHeight(pixelWidth - 48, pixelHeight - 48)
+		pixelWidth = pixelWidth + 48
+		pixelHeight = pixelHeight + 48
 		if (math.abs(self.GetPixelWidth() - pixelWidth) >= 1) then
 			protected.widgetFrame:SetWidth(pixelWidth)
 		end
@@ -260,8 +260,8 @@ function GnomTECWidgetContainerToolbox(init)
 				local widgetWidth = protected.widgetDb.width
 				local widgetHeight = protected.widgetDb.height
 				
-				self.ResizeByWidth(widgetWidth + 8, widgetHeight + 8)
-				self.ResizeByHeight(widgetWidth + 8, widgetHeight + 8)
+				self.ResizeByWidth(widgetWidth + 48, widgetHeight + 48)
+				self.ResizeByHeight(widgetWidth + 48, widgetHeight + 48)
 			end
 		end
 	end
@@ -281,7 +281,7 @@ function GnomTECWidgetContainerToolbox(init)
 			init = {}
 		end
 		
-		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent, "T_GNOMTECWIDGETCONTAINERTOOLBOX")
+		local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent, "T_GNOMTECWIDGETCONTAINERDEVICE")
 
 		local reseizeButton = CreateFrame("Button", nil, widgetFrame)
 		local containerFrame = widgetFrame.containerFrame
@@ -342,7 +342,7 @@ function GnomTECWidgetContainerToolbox(init)
 		if (not r) then
 			widgetFrame:SetWidth(w)		
 		else
-			protected.widgetWidth = 64
+			protected.widgetWidth = 48
 			protected.widgetWidthIsRelative = false
 			widgetFrame:SetWidth(protected.widgetWidth)		
 		end
@@ -350,7 +350,7 @@ function GnomTECWidgetContainerToolbox(init)
 		if (not r) then
 			widgetFrame:SetHeight(h)		
 		else
-			protected.widgetHeight = 64
+			protected.widgetHeight = 48
 			protected.widgetHeightIsRelative = false
 			widgetFrame:SetHeight(protected.widgetHeight)
 		end
@@ -374,7 +374,7 @@ function GnomTECWidgetContainerToolbox(init)
 		lastWidth = self.GetPixelWidth()
 		lastHeight = self.GetPixelHeight()
 
-		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetContainerToolbox", "New instance created (%s)", protected.UID)
+		protected.LogMessage(CLASS_WIDGET, LOG_DEBUG, "GnomTECWidgetContainerDevice", "New instance created (%s)", protected.UID)
 		
 	end
 	

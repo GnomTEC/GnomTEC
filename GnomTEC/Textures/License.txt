@@ -1,0 +1,17 @@
+Some graphics (*.tga) are generated from following mentioned sources:
+
+----
+device_background.tga
+
+http://www.stockvault.net/photo/102984/brushed-steel-texture
+Image license terms:
+This photo is free for personal, educational and non-commercial usage.
+You may not use it to promote a product or a service.
+----
+
+----
+nixie.tga
+
+http://seriss.com/people/erco/unixtools/nixieclock/
+GNU GENERAL PUBLIC LICENSE Version 2
+----

@@ -1,0 +1,10 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+	<!-- T_GNOMTECWIDGETDEVICELED: Standard template for GnomTECWidgetDeviceLED -->
+	<CheckButton name="T_GNOMTECWIDGETDEVICELED" virtual="true">
+		<Size x="32" y="32" />
+		<NormalTexture file="Interface/AddOns/GnomTEC/GnomTEC/Textures/device_led_off" />
+		<CheckedTexture file="Interface/AddOns/GnomTEC/GnomTEC/Textures/device_led_on" />
+	</CheckButton>
+
+</Ui>

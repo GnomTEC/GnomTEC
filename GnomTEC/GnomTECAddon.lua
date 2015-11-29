@@ -289,7 +289,7 @@ function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
 		protected.LogMessage(CLASS_CLASS, LOG_DEBUG, "GnomTECAddon", "New instance created (%s / %s)", protected.UID, protected.addonUID)
 	end
 	
-	-- return the instance and protected table
+	-- return the instance table
 	return self, protected
 end
 

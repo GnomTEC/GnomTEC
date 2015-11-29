@@ -38,6 +38,7 @@
 	<Include file="Widgets\GnomTECWidgetContainer.lua"/> 
 
 	<!-- GnomTEC Framework Widget Templates -->
+	<Include file="Templates\T_GNOMTECWIDGETCONTAINERDEVICE.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTFILL.xml"/> 
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTGRID.xml"/> 
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTHORIZONTAL.xml"/>
@@ -45,6 +46,10 @@
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTVERTICAL.xml"/> 
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERTOOLBOX.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERWINDOW.xml"/>
+	<Include file="Templates\T_GNOMTECWIDGETDEVICELED.xml"/>	
+	<Include file="Templates\T_GNOMTECWIDGETDEVICENIXIE.xml"/>	
+	<Include file="Templates\T_GNOMTECWIDGETDEVICEPLAQUE.xml"/>	
+	<Include file="Templates\T_GNOMTECWIDGETDEVICESWITCH.xml"/>	
 	<Include file="Templates\T_GNOMTECWIDGETDROPDOWNBUTTON.xml"/>	
 	<Include file="Templates\T_GNOMTECWIDGETEDITBOX.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETMAP.xml"/>
@@ -55,6 +60,7 @@
 	<Include file="Templates\T_GNOMTECWIDGETTEXTUREBUTTON.xml"/>
 
 	<!-- GnomTEC Framework Widget Classes -->
+	<Include file="Widgets\GnomTECWidgetContainerDevice.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerLayoutFill.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerLayoutGrid.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerLayoutHorizontal.lua"/>
@@ -62,6 +68,10 @@
 	<Include file="Widgets\GnomTECWidgetContainerLayoutVertical.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerToolbox.lua"/>
 	<Include file="Widgets\GnomTECWidgetContainerWindow.lua"/>
+	<Include file="Widgets\GnomTECWidgetDeviceLED.lua"/>
+	<Include file="Widgets\GnomTECWidgetDeviceNixie.lua"/>
+	<Include file="Widgets\GnomTECWidgetDevicePlaque.lua"/>
+	<Include file="Widgets\GnomTECWidgetDeviceSwitch.lua"/>	
 	<Include file="Widgets\GnomTECWidgetDropDownButton.lua"/>
 	<Include file="Widgets\GnomTECWidgetEditBox.lua"/>
 	<Include file="Widgets\GnomTECWidgetMap.lua"/>
@@ -73,6 +83,7 @@
 
 	<!-- GnomTEC Framework Classes -->
 	<Include file="Classes\GnomTECClassCharacter.lua"/>
+	<Include file="Classes\GnomTECClassChat.lua"/>
 
 	<!-- GnomTEC Framework Addon Main Class -->
 	<Include file="GnomTECAddon.lua"/>
