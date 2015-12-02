@@ -202,6 +202,7 @@ function GnomTECWidgetDeviceNixie(init)
 	local nixieFrames = {}
 	local nixieTextures = {}
 	
+	local timePause = 0
 	local timeElapsed = 0
 	local nixieOffset = 0
 	
@@ -210,8 +211,12 @@ function GnomTECWidgetDeviceNixie(init)
 	local function OnUpdate(frame, elapsed)
 		if (protected.text) then
 			timeElapsed = timeElapsed + elapsed
-
-			if (timeElapsed > 0.3) then
+			if (timePause > 0) then
+				if (timeElapsed > timePause) then
+					timeElapsed = timeElapsed - timePause
+					timePause = 0
+				end
+			elseif (timeElapsed > 0.3) then
 				timeElapsed = timeElapsed - 0.3
 				nixieOffset = nixieOffset + 1
 				if (nixieOffset > #protected.text) then
@@ -299,8 +304,11 @@ function GnomTECWidgetDeviceNixie(init)
 		return protected.on
 	end
 
-	function self.SetText(text)
+	function self.SetText(text, offset, pause)
 		protected.text = emptynil(text)
+		timePause = pause or 0
+		timeElapsed = 0
+		nixieOffset = offset or nixieOffset
 		local c
 		for i = 1, protected.length do
 			if (not protected.on) then

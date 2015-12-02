@@ -88,10 +88,10 @@ function _CHAT_MSG_INSTANCE_CHAT(eventName, message, sender)
 	end
 end
 
-function _CHAT_MSG_CHANNEL(eventName, message, sender, channelString)	
+function _CHAT_MSG_CHANNEL(eventName, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
-		value.SafeCall(value.OnChannel, message, sender, channelString)
+		value.SafeCall(value.OnChannel, message, sender, channelNumber)
 	end
 end
 
@@ -209,6 +209,14 @@ function GnomTECClassChat()
 
 	function self.Whisper(text, target)
 		SendChatMessage(text, "WHISPER", nil, target)
+	end
+
+	function self.SendMessage(text, distribution, channel)
+		if (distribution == "CHANNEL") then
+			SendChatMessage(text, "CHANNEL", nil, channel)
+		else
+			SendChatMessage(text, distribution)
+		end
 	end
 
 	function self.LocalMonsterWhisper(text, sender)
