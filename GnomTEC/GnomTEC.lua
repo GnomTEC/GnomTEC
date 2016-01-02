@@ -53,6 +53,8 @@ class.maxLogBuffer = 1024
 class.logBuffer = class.logBuffer or {}
 class.logReceivers = class.logReceivers or {}
 class.timerFrame = class.timerFrame
+class.timer = class.timer or {}
+class.timerId = class.timerId or 0
 
 -- ----------------------------------------------------------------------
 -- Class Startup Initialization
@@ -75,12 +77,26 @@ class.timerFrame = class.timerFrame
 -- the global timer function
 local function _OnUpdate(frame, elapsed)
 
+	local remove = {}
 
+	for key, value in pairs(class.timer) do
+		value.timeElapsed = value.timeElapsed + elapsed
+		if (value.timeElapsed  > value.delay) then
+			value.timeElapsed  =  value.timeElapsed - value.delay
+			if (value.once) then
+				remove[key] = true
+			end
+			if type(value.func) == "function" then
+				value.func()
+			end
+		end
+	end
+
+	for key, value in pairs(remove) do
+		class.timer[key] = nil
+	end
 end
- 
- 
-
-
+  
 -- ----------------------------------------------------------------------
 -- Class
 -- ----------------------------------------------------------------------
@@ -102,6 +118,7 @@ function GnomTEC()
 	-- private fields are implemented using locals
 	-- they are faster than table access, and are truly private, so the code that uses your class can't get them
 	-- local field
+	local eventHandlers = {}
 		
 	-- private methods
 	-- local function f()
@@ -147,7 +164,6 @@ function GnomTEC()
 		if type(logReceiver) == "function" then
 			self.UnregisterLogReceiver(logReceiver)
 			table.insert(class.logReceivers, {func=logReceiver, logReceived=0})
-			protected.LogMessage(CLASS_BASE, LOG_DEBUG, "GnomTEC", "log receiver registered")
 		end
 	end
 
@@ -167,6 +183,51 @@ function GnomTEC()
 		end
 	end
 
+	function self.RegisterEvent(event, eventHandler)
+		if (eventHandlers[event] == nil) then
+			eventHandlers[event] = {}
+		end
+		eventHandlers[event][eventHandler] = true
+	end
+
+	function self.UnregisterEvent(event, eventHandler)
+  		if (eventHandlers[event] ~= nil) then
+	   	eventHandlers[event][eventHandler] = nil
+		end
+	end
+
+	function self.UnregisterAllEvents(eventHandler)
+	 	for event, _ in pairs(eventHandlers) do
+	   	eventHandlers[event][eventHandler] = nil
+		end
+	end
+
+	function self.TriggerEvent(event, ...)
+		if (eventHandlers[event] ~= nil) then
+   		for eventHandler, _ in pairs(eventHandlers[event]) do
+   			self.SafeCall(eventHandler, self, event, ...)
+   		end
+   	end
+	end
+	
+	function self.ScheduleTimer(func, delay)
+		class.timerId = class.timerId + 1
+		
+		class.timer[class.timerId] = {}
+		class.timer[class.timerId].timeElapsed = 0
+		class.timer[class.timerId].once = true
+		class.timer[class.timerId].func = func
+		class.timer[class.timerId].delay = delay
+	end
+
+	function self.ScheduleRepeatingTimer(func, delay)
+		class.timerId = class.timerId + 1
+		
+		class.timer[class.timerId] = {}
+		class.timer[class.timerId].timeElapsed = 0
+		class.timer[class.timerId].func = func
+		class.timer[class.timerId].delay = delay
+	end
 
 	-- constructor
 	do

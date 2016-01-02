@@ -467,6 +467,7 @@ local function _OnCommReceived(prefix, message, distribution, sender)
 					if (class.addonsList[addonTitle]) then
 						local self = class.addonsList[addonTitle]["Self"]
 						self.SafeCall(self.OnBroadcast, data, sender)
+						self.TriggerEvent("GNOMTEC_COMM_BROADCAST", data,sender)
 					end
 				end
 			else
@@ -479,7 +480,9 @@ end
 local function _UPDATE_MOUSEOVER_UNIT(eventName)
 	if (not UnitIsUnit("mouseover", "player")) then
 		if (Fixed_UnitIsPlayer("mouseover")) then
-			local unitName = fullunitname(UnitName("mouseover"))
+			local player, realm = UnitName("mouseover")
+			realm = string.gsub(realm or GetRealmName(), "%s+", "")
+			local unitName = player.."-"..realm
 			-- Trigger data exchange with unit
 			_commRequestTimestamps(unitName)
 	 	end
@@ -718,7 +721,8 @@ function GnomTECComm(addonTitle, addonInfo)
 		class.addonsList[addonTitle] = {
 			["Addon"] = addonTitle,
 			["AddonInfo"] = addonInfo,
-			["Self"] = self
+			["Self"] = self,
+			["Protected"] = protected,
 		}		
 		for idx, value in ipairs(class.addonsListReceivers) do
 			value.func(self.pairsCommAddonsList)

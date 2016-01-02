@@ -198,11 +198,7 @@ function GnomTECAddon(addonTitle, addonInfo , defaultsDb, optionsArray)
 	function self.RegisterChatCommand(command, func)
 		aceAddon:RegisterChatCommand(command, func)
 	end
-	
-	function self.ScheduleTimer(func, delay)
-		aceAddon:ScheduleTimer(func, delay)
-	end
-	
+		
 	-- constructor
 	do
 		class.lastUID = class.lastUID + 1

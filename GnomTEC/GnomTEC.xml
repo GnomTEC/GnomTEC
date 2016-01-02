@@ -29,6 +29,10 @@
 	<Include file="GnomTEC.lua"/>
 	<Include file="GnomTECComm.lua"/>
 
+	<!-- GnomTEC Framework Common Classes -->
+	<Include file="Classes\GnomTECClassCharacter.lua"/>
+	<Include file="Classes\GnomTECClassChat.lua"/>
+
 	<!-- GnomTEC Framework Base Widget Templates -->
 	<Include file="Templates\T_GNOMTECWIDGET.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINER.xml"/> 
@@ -81,9 +85,8 @@
 	<Include file="Widgets\GnomTECWidgetText.lua"/>
 	<Include file="Widgets\GnomTECWidgetTextureButton.lua"/>
 
-	<!-- GnomTEC Framework Classes -->
-	<Include file="Classes\GnomTECClassCharacter.lua"/>
-	<Include file="Classes\GnomTECClassChat.lua"/>
+	<!-- GnomTEC Framework Addon Module Class -->
+	<Include file="GnomTECAddonModule.lua"/>
 
 	<!-- GnomTEC Framework Addon Main Class -->
 	<Include file="GnomTECAddon.lua"/>
