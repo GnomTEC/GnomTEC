@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECClassChat
--- Version: 6.2.2.3
+-- Version: 7.0.3.4
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2015 by Peter Jack
+-- Copyright © 2014-2016 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECClassChat-1.0", 3
+local MAJOR, MINOR = "GnomTECClassChat-1.0", 4
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
