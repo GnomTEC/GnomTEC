@@ -172,6 +172,7 @@
  			     </Anchor>
  			  </Anchors>
 			</Frame>
+<!-- we have some issues here and as we didn't use it yet it's removed for now
 			<Button name="$parentHelpButton" parentKey="helpButton" inherits="MainHelpPlateButton" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="39" y="20" />
@@ -183,6 +184,7 @@
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentcontainerFrame" x="0" y="0"/>
 				</Anchors>
 			</Frame>
+-->
 		</Frames>
 	</Frame>
 	

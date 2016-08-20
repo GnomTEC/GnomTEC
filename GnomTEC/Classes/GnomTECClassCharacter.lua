@@ -115,7 +115,7 @@ local function _LogMessage(logLevel, message, ...)
 end
 
 local function _UpdateUnitPosition(unitName, unitPosition)
-	local posX = nil, posY, posZ, terrainMapID
+	local posX = nil, posY, posZ, instanceID
 	local distance = nil
 	local prefix = "party"
 	
@@ -125,7 +125,7 @@ local function _UpdateUnitPosition(unitName, unitPosition)
 	if (GetNumGroupMembers() > 1) then
 		for i=1, GetNumGroupMembers(), 1 do
 			if (unitName == fullunitname(UnitName(prefix..i))) then
-				posX, posY, posZ, terrainMapID = UnitPosition(prefix..i)
+				posX, posY, posZ, instanceID = UnitPosition(prefix..i)
 				if (posX) then
 					local distanceSquared, checkedDistance = UnitDistanceSquared(prefix..i)
 					if (checkedDistance) then
@@ -140,7 +140,7 @@ local function _UpdateUnitPosition(unitName, unitPosition)
 	
 	if (not posX) then
 		if (unitName == fullunitname(UnitName("player"))) then
-			posX, posY, posZ, terrainMapID = UnitPosition("player")
+			posX, posY, posZ, instanceID = UnitPosition("player")
 			if (posX) then
 				distance = 0
 			end
@@ -151,7 +151,7 @@ local function _UpdateUnitPosition(unitName, unitPosition)
 		unitPosition.posX = posX
 		unitPosition.posY = posY
 		unitPosition.posZ = posZ
-		unitPosition.terrainMapID = terrainMapID
+		unitPosition.instanceID = instanceID
 		unitPosition.distance = distance
 		return true
 	end
@@ -328,7 +328,7 @@ function GnomTECClassCharacter(unitName)
 		posX = nil,
 		posY = nil,
 		posZ = nil,
-		terrainMapID = nil,
+		instanceID = nil,
 		distance = nil
 	}
 			
@@ -348,7 +348,7 @@ function GnomTECClassCharacter(unitName)
 		local updated = _UpdateUnitPosition(unitName, unitPosition)
 		
 		if (updated or (not notCached)) then
-			return unitPosition.posX, unitPosition.posY, unitPosition.posZ, unitPosition.terrainMapID
+			return unitPosition.posX, unitPosition.posY, unitPosition.posZ, unitPosition.instanceID
 		else
 			return nil
 		end
@@ -364,13 +364,13 @@ function GnomTECClassCharacter(unitName)
 		end
 	end
 	
-	function self.SetPosition(posX, posY, posZ, terrainMapID)
-		local playerPosX, playerPosY, playerPosZ, playerTerrainMapID
+	function self.SetPosition(posX, posY, posZ, instanceID)
+		local playerPosX, playerPosY, playerPosZ, playerInstanceID
 		local distance
 
-		playerPosX, playerPosY, playerPosZ, playerTerrainMapID = UnitPosition("player")
+		playerPosX, playerPosY, playerPosZ, playerInstanceID = UnitPosition("player")
 		
-		if (playerPosX and posX and (playerTerrainMapID == terrainMapID)) then
+		if (playerPosX and posX and (playerInstanceID == instanceID)) then
 			distance = ((playerPosX - posX)^2 + (playerPosY - posY)^2)^0.5
 		else
 			distance = nil
@@ -379,7 +379,7 @@ function GnomTECClassCharacter(unitName)
 		unitPosition.posX = posX
 		unitPosition.posY = posY
 		unitPosition.posZ = posZ
-		unitPosition.terrainMapID = terrainMapID
+		unitPosition.instanceID = instanceID
 		unitPosition.distance = distance
 	end
 

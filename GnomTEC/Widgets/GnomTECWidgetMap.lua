@@ -74,6 +74,7 @@ function GnomTECWidgetMap(init)
 
 	-- protected fields go in the protected table
 	-- protected.field = value
+	protected.mapTextureFilenameBase = [[Interface\WorldMap\StormwindCity\StormwindCity]]
 	protected.mapTextures = {}
 	
 	-- private fields are implemented using locals
@@ -196,11 +197,15 @@ function GnomTECWidgetMap(init)
 			widgetFrame:SetHeight((32 * 667.0 * 3.0 / 768.0))
 		end
 		
+		if (init.mapTextureFilenameBase) then
+			protected.mapTextureFilenameBase = init.mapTextureFilenameBase		
+		end
+		
 		for r = 1, 3 do
 			for c = 1, 4 do
 				local texture = widgetFrame:CreateTexture(nil)
 				protected.mapTextures[4 * (r-1) + c] = texture
-				texture:SetTexture([[Interface\WorldMap\StormwindCity\StormwindCity]]..(4 * (r-1) + c))				
+				texture:SetTexture(protected.mapTextureFilenameBase..(4 * (r-1) + c))				
 				texture:SetPoint("TOPLEFT",32 * (c-1), -32 * (r-1))
 				texture:SetWidth(32)
 				texture:SetHeight(32)

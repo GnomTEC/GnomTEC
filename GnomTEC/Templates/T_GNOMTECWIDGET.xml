@@ -14,7 +14,8 @@
 	</Frame>
 
 
-	<!-- T_GNOMTECWIDGET: Standard template for GnomTECWidget-->
+	<!-- T_GNOMTECWIDGET_HELPFRAME: Standard template for GnomTECWidget-->
+<!-- we have some issues here and as we didn't use it yet it's removed for now
 	<Frame name="T_GNOMTECWIDGET_HELPFRAME" virtual="true">
 		<Frames>
 			<Frame name="$parentBox" inherits="HelpPlateBox" parentKey="box">
@@ -52,4 +53,5 @@
 			</Button>
 		</Frames>
 	</Frame>
+-->
 </Ui>

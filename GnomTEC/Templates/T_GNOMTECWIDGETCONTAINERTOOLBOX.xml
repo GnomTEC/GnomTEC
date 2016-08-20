@@ -108,12 +108,14 @@
  			     </Anchor>
  			  </Anchors>
 			</Frame>
+<!-- we have some issues here and as we didn't use it yet it's removed for now
    		<Frame name="$parentcontainerHelpFrame" parentKey="helpFrame" inherits="T_GNOMTECWIDGET_HELPFRAME">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentcontainerFrame" x="0" y="0"/>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentcontainerFrame" x="0" y="0"/>
 				</Anchors>
 			</Frame>
+-->
 		</Frames>
 	</Frame>
 </Ui>
