@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 7.0.3.4
+-- Version: 7.0.3.6
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 4
+local MAJOR, MINOR = "GnomTECComm-1.0", 6
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -483,8 +483,11 @@ local function _UPDATE_MOUSEOVER_UNIT(eventName)
 			local player, realm = UnitName("mouseover")
 			realm = string.gsub(realm or GetRealmName(), "%s+", "")
 			local unitName = player.."-"..realm
-			-- Trigger data exchange with unit
-			_commRequestTimestamps(unitName)
+
+			-- Trigger data exchange with unit but only if it is a friendly player
+			if UnitIsFriend("mouseover", "player") then
+				_commRequestTimestamps(unitName)
+			end
 	 	end
  	end
  end
