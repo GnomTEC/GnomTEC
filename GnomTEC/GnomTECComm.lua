@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 7.0.3.6
+-- Version: 7.0.3.7
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 6
+local MAJOR, MINOR = "GnomTECComm-1.0", 7
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -35,14 +35,14 @@ local T = [[Interface\Addons\]].. ... ..[[\GnomTEC\Textures\]]
 -- Class levels
 local CLASS_BASE		= 0
 local CLASS_CLASS		= 1
-local CLASS_WIDGET	= 2
+local CLASS_WIDGET		= 2
 local CLASS_ADDON		= 3
 
 -- Log levels
 local LOG_FATAL 	= 0
-local LOG_ERROR	= 1
+local LOG_ERROR		= 1
 local LOG_WARN		= 2
-local LOG_INFO 	= 3
+local LOG_INFO 		= 3
 local LOG_DEBUG 	= 4
 
 -- communication prefix
