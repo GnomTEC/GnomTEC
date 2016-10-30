@@ -1,7 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
-=== 7.0.3.7 (2016-09-xx)
-* ...
+=== 7.1.0.7 (2016-10-30)
+* Updated TOC for WoW patch 7.1.0
+* yet open issue with ScrollingMessage widget (will be fixed in next version)
 
 === 7.0.3.6 (2016-09-04)
 * fixed "No player named <name> is currently playing" issue

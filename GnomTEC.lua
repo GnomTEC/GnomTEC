@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 7.0.3.7
+-- Version: 7.1.0.7
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -29,31 +29,31 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_")
 local addonInfo = {
 	["Name"] = "GnomTEC (Addon Framework)",
 	["Description"] = L["L_DESCRIPTION"],	
-	["Version"] = "7.0.3.7",
-	["Date"] = "2016-09-23",
+	["Version"] = "7.1.0.7",
+	["Date"] = "2016-10-30",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
 	["Copyright"] = "© 2014-2016 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",
-	["FrameworkRevision"] = 7
+	["FrameworkRevision"] = 4
 }
 
 -- ----------------------------------------------------------------------
 -- Addon Global Constants (local)
 -- ----------------------------------------------------------------------
 -- Class levels
-local CLASS_BASE		= 0
-local CLASS_CLASS		= 1
+local CLASS_BASE	= 0
+local CLASS_CLASS	= 1
 local CLASS_WIDGET	= 2
-local CLASS_ADDON		= 3
+local CLASS_ADDON	= 3
 
 -- Log levels
-local LOG_FATAL 	= 0
+local LOG_FATAL = 0
 local LOG_ERROR	= 1
-local LOG_WARN		= 2
+local LOG_WARN	= 2
 local LOG_INFO 	= 3
-local LOG_DEBUG 	= 4
+local LOG_DEBUG	= 4
 
 -- ----------------------------------------------------------------------
 -- Addon Static Variables (local)

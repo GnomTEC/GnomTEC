@@ -228,7 +228,8 @@ function GnomTECWidgetScrollingMessage(init)
 		scrollingMessageFrame:SetMaxLines(1024)
 		
 		scrollingMessageFrame:SetScript("OnMouseWheel", OnMouseWheel)
-		scrollingMessageFrame:SetScript("OnMessageScrollChanged", OnMessageScrollChanged)
+		-- following not working anymore with 7.1.0? 
+		-- scrollingMessageFrame:SetScript("OnMessageScrollChanged", OnMessageScrollChanged)
 		
 		slider:SetScript("OnMouseWheel", OnMouseWheel)
 		slider:SetScript("OnValueChanged", OnValueChanged)
