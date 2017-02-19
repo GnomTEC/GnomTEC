@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetContainerToolbox
--- Version: 7.0.3.7
+-- Version: 7.1.5.8
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2016 by Peter Jack
+-- Copyright © 2014-2017 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetContainerToolbox-1.0", 7
+local MAJOR, MINOR = "GnomTECWidgetContainerToolbox-1.0", 8
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -40,9 +40,9 @@ local CLASS_ADDON		= 3
 
 -- Log levels
 local LOG_FATAL 	= 0
-local LOG_ERROR	= 1
+local LOG_ERROR		= 1
 local LOG_WARN		= 2
-local LOG_INFO 	= 3
+local LOG_INFO 		= 3
 local LOG_DEBUG 	= 4
 
 -- ----------------------------------------------------------------------

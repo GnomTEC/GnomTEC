@@ -1,10 +1,10 @@
 -- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 6.2.2.3
+-- Version: 7.1.5.8
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright 2014-2015 Peter Jack
+-- Copyright 2014-2017 Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.

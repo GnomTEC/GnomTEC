@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 7.1.0.7
+-- Version: 7.1.5.8
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2016 by Peter Jack
+-- Copyright © 2014-2017 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -29,14 +29,14 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_")
 local addonInfo = {
 	["Name"] = "GnomTEC (Addon Framework)",
 	["Description"] = L["L_DESCRIPTION"],	
-	["Version"] = "7.1.0.7",
-	["Date"] = "2016-10-30",
+	["Version"] = "7.1.5.8",
+	["Date"] = "2017-02-11",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
-	["Copyright"] = "© 2014-2016 by Peter Jack",
+	["Copyright"] = "© 2014-2017 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",
-	["FrameworkRevision"] = 4
+	["FrameworkRevision"] = 8
 }
 
 -- ----------------------------------------------------------------------

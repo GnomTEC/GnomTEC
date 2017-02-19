@@ -1,0 +1,75 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+	<!-- T_GNOMTECWIDGETBOOK: Standard template for GnomTECWidgetBook -->
+	<Frame name="T_GNOMTECWIDGETBOOK" virtual="true">
+		<Backdrop bgFile="Interface/AddOns/GnomTEC/GnomTEC/Textures/book_background"/>
+		<Layers>
+			<Layer level="OVERLAY">
+			</Layer>
+		</Layers>
+		<Frames>
+			<SimpleHTML name="$parentPage" parentKey="simpleHTML">
+				<Size x="380" y="380" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="80" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Fontstring name="$parentFont" font="Interface/AddOns/GnomTEC/GnomTEC/Fonts/AlexBrush-Regular.ttf">
+					<FontHeight val="24"/>
+					<Color b="0" g="0" r="0"/>
+				</Fontstring>
+			</SimpleHTML>
+			<Button name="$parentReciteButton"  parentKey="recite">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\CHATFRAME\UI-ChatIcon-Chat-Up"/>
+				<PushedTexture file="Interface\CHATFRAME\UI-ChatIcon-Chat-Down"/>
+				<DisabledTexture file="Interface\CHATFRAME\UI-ChatIcon-Chat-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+			<Button name="$parentPrevPageButton"  parentKey="prevPage">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-66" y="30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+			<Button name="$parentNextPageButton" parentKey="nextPage">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-31" y="30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+		</Frames>
+	</Frame>
+</Ui>

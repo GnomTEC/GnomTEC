@@ -42,6 +42,7 @@
 	<Include file="Widgets\GnomTECWidgetContainer.lua"/> 
 
 	<!-- GnomTEC Framework Widget Templates -->
+	<Include file="Templates\T_GNOMTECWIDGETBOOK.xml"/>	
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERDEVICE.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTFILL.xml"/> 
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINERLAYOUTGRID.xml"/> 
@@ -64,6 +65,7 @@
 	<Include file="Templates\T_GNOMTECWIDGETTEXTUREBUTTON.xml"/>
 
 	<!-- GnomTEC Framework Widget Classes -->
+	<Include file="Widgets\GnomTECWidgetBook.lua"/>
 	<Include file="Widgets\GnomTECWidgetContainerDevice.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerLayoutFill.lua"/> 
 	<Include file="Widgets\GnomTECWidgetContainerLayoutGrid.lua"/> 

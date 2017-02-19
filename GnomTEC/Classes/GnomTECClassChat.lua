@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECClassChat
--- Version: 7.0.3.7
+-- Version: 7.1.5.8
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2016 by Peter Jack
+-- Copyright © 2014-2017 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECClassChat-1.0", 7
+local MAJOR, MINOR = "GnomTECClassChat-1.0", 8
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -40,9 +40,9 @@ local CLASS_ADDON		= 3
 
 -- Log levels
 local LOG_FATAL 	= 0
-local LOG_ERROR	= 1
+local LOG_ERROR		= 1
 local LOG_WARN		= 2
-local LOG_INFO 	= 3
+local LOG_INFO 		= 3
 local LOG_DEBUG 	= 4
 
 -- ----------------------------------------------------------------------
@@ -81,70 +81,70 @@ end
 -- ----------------------------------------------------------------------
 -- Class Static Event Handler (local)
 -- ----------------------------------------------------------------------
-function _CHAT_MSG_INSTANCE_CHAT(eventName, message, sender)	
+local function _CHAT_MSG_INSTANCE_CHAT(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnInstance, message, sender)
 	end
 end
 
-function _CHAT_MSG_CHANNEL(eventName, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName)	
+local function _CHAT_MSG_CHANNEL(eventName, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnChannel, message, sender, channelNumber)
 	end
 end
 
-function _CHAT_MSG_EMOTE(eventName, message, sender)	
+local function _CHAT_MSG_EMOTE(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnEmote, message, sender)
 	end
 end
 
-function _CHAT_MSG_GUILD(eventName, message, sender)	
+local function _CHAT_MSG_GUILD(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnGuild, message, sender)
 	end
 end
 
-function _CHAT_MSG_OFFICER(eventName, message, sender)	
+local function _CHAT_MSG_OFFICER(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnOfficer, message, sender)
 	end
 end
 
-function _CHAT_MSG_PARTY(eventName, message, sender)	
+local function _CHAT_MSG_PARTY(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnParty, message, sender)
 	end
 end
 
-function _CHAT_MSG_RAID(eventName, message, sender)	
+local function _CHAT_MSG_RAID(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnRaid, message, sender)
 	end
 end
 
-function _CHAT_MSG_SAY(eventName, message, sender)	
+local function _CHAT_MSG_SAY(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnSay, message, sender)
 	end
 end
 
-function _CHAT_MSG_WHISPER(eventName, message, sender)	
+local function _CHAT_MSG_WHISPER(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnWhisper, message, sender)
 	end
 end
 
-function _CHAT_MSG_YELL(eventName, message, sender)	
+local function _CHAT_MSG_YELL(eventName, message, sender)	
 	sender = fullunitname(sender)
 	for key, value in pairs(class.objects) do
 		value.SafeCall(value.OnYell, message, sender)

@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 7.0.3.7
+-- Version: 7.1.5.8
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2016 by Peter Jack
+-- Copyright © 2014-2017 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 7
+local MAJOR, MINOR = "GnomTECComm-1.0", 8
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -33,10 +33,10 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC")
 local T = [[Interface\Addons\]].. ... ..[[\GnomTEC\Textures\]]
 
 -- Class levels
-local CLASS_BASE		= 0
-local CLASS_CLASS		= 1
-local CLASS_WIDGET		= 2
-local CLASS_ADDON		= 3
+local CLASS_BASE	= 0
+local CLASS_CLASS	= 1
+local CLASS_WIDGET	= 2
+local CLASS_ADDON	= 3
 
 -- Log levels
 local LOG_FATAL 	= 0
@@ -59,7 +59,7 @@ local COMM_REQ_ADDONS	 		= "?A"	-- data = {t_addons}
 local COMM_RES_ADDONS			= "!A"	-- data = {t_addons, addons[] or nil}
 local COMM_REQ_DATA	 			= "?D"	-- data = {addonTitle, t_addondata}
 local COMM_RES_DATA				= "!D"	-- data = {addonTitle, t_addondata, data or nil}
-local COMM_BROADCAST				= "!B"	-- data = {addonTitle, data}
+local COMM_BROADCAST			= "!B"	-- data = {addonTitle, data}
 
 -- ----------------------------------------------------------------------
 -- Class Static Variables

@@ -1,5 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 7.1.5.8 (2017-02-19)
+* new GnomTECWidgetBook
+
 === 7.1.0.7 (2016-10-30)
 * Updated TOC for WoW patch 7.1.0
 * yet open issue with ScrollingMessage widget (will be fixed in next version)
