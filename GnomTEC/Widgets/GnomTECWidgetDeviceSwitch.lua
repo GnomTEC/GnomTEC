@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetDeviceSwitch
--- Version: 7.1.5.8
+-- Version: 7.2.0.9
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetDeviceSwitch-1.0", 8
+local MAJOR, MINOR = "GnomTECWidgetDeviceSwitch-1.0", 9
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
