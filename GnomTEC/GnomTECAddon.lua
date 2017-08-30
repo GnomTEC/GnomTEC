@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECAddon Class
--- Version: 7.2.0.9
+-- Version: 7.3.0.10
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECAddon-1.0", 9
+local MAJOR, MINOR = "GnomTECAddon-1.0", 10
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -48,7 +48,7 @@ local LOG_DEBUG 	= 4
 -- ----------------------------------------------------------------------
 -- Class Static Variables (local)
 -- ----------------------------------------------------------------------
-class.FrameworkRevision = 9						-- update this every release
+class.FrameworkRevision = 10						-- update this every release
 class.lastUID = class.lastUID or 0
 class.dataObjects = class.dataObjects or {}
 

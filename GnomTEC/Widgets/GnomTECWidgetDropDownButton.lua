@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetDropDownButton
--- Version: 7.2.0.9
+-- Version: 7.3.0.10
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetDropDownButton-1.0", 9
+local MAJOR, MINOR = "GnomTECWidgetDropDownButton-1.0", 10
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
