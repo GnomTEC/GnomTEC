@@ -19,13 +19,32 @@
  			           <AbsDimension x="0" y="0"/>
  			        </Offset>
  			     </Anchor>
-   		     <Anchor point="BOTTOMRIGHT">
+				<Anchor point="BOTTOMRIGHT">
      			     <Offset>
  			           <AbsDimension x="-16" y="0"/>
  			        </Offset>
  			     </Anchor>
-				</Anchors>
-				<FontString inherits="ChatFontNormal" justifyH="LEFT"/>
+			</Anchors>
+			<Layers>
+				<Layer level="BACKGROUND">
+					<Texture parentKey="Background">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-1" y="2" />
+							<Anchor point="BOTTOMRIGHT" x="1" y="-2" />
+						</Anchors>
+						<Color r=".1" g=".1" b=".1" a=".8"/>
+					</Texture>
+				</Layer>
+			</Layers>
+			<Scripts>
+				<OnLoad>
+					self:SetFading(false);
+					self:SetFontObject(ConsoleFontSmall);
+					self:SetJustifyH("LEFT");
+					self:SetHyperlinksEnabled(true);
+					self:SetTextCopyable(true);
+				</OnLoad>
+			</Scripts>
       	</ScrollingMessageFrame>
       	<Slider name="$parentslider" parentKey="slider">
       		<Anchors>
@@ -52,7 +71,7 @@
 							<OnClick>
 								local parent = self:GetParent();
 								parent:SetValue(parent:GetValue() - parent:GetValueStep());
-								PlaySound("UChatScrollButton");
+								PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -64,7 +83,7 @@
 							<OnClick>
 								local parent = self:GetParent();
 								parent:SetValue(parent:GetValue() + parent:GetValueStep());
-								PlaySound("UChatScrollButton");
+								PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 							</OnClick>
 						</Scripts>
 					</Button>

@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetSpacer
--- Version: 7.3.0.10
+-- Version: 7.3.0.11
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetSpacer-1.0", 10
+local MAJOR, MINOR = "GnomTECWidgetSpacer-1.0", 11
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.

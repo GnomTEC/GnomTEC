@@ -1,6 +1,6 @@
 -- **********************************************************************
 -- GnomTEC Base Class
--- Version: 7.3.0.10
+-- Version: 7.3.0.11
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTEC-1.0", 10
+local MAJOR, MINOR = "GnomTEC-1.0", 11
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.

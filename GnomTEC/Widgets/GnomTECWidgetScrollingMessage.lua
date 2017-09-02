@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetScrollingMessage
--- Version: 7.3.0.10
+-- Version: 7.3.0.11
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetScrollingMessage-1.0", 10
+local MAJOR, MINOR = "GnomTECWidgetScrollingMessage-1.0", 11
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -80,66 +80,36 @@ function GnomTECWidgetScrollingMessage(init)
 	-- private fields are implemented using locals
 	-- they are faster than table access, and are truly private, so the code that uses your class can't get them
 	-- local field
-	local lockSliderOrScrollUpdate = false
 	
 	-- private methods
 	-- local function f()
 	local function OnMouseWheel(frame, delta)
-		local num = protected.scrollingMessageFrame:GetNumMessages()
-		local cur = protected.scrollingMessageFrame:GetCurrentScroll()
-		local disp = protected.scrollingMessageFrame:GetNumLinesDisplayed()
+		if IsControlKeyDown() then
+			delta = delta * protected.scrollingMessageFrame:GetPagingScrollAmount(); 
+		elseif IsShiftKeyDown() then
+			delta = delta * 10;
+		end 
 
-		local newValue = cur + delta
-
-		if (newValue < 0) then
-			newValue = 0
-		elseif (newValue > (num-disp)) then
-			newValue = (num-disp)
-		end
-		if (cur ~= newValue) then
-			protected.scrollingMessageFrame:SetScrollOffset(newValue)
-		end
+		protected.scrollingMessageFrame:ScrollByAmount(delta);
 	end
 
-	local function OnMessageScrollChanged(frame)
-		if (not lockSliderOrScrollUpdate) then
-			lockSliderOrScrollUpdate = true
-			
-			local num = protected.scrollingMessageFrame:GetNumMessages()
-			local cur = protected.scrollingMessageFrame:GetCurrentScroll()
-			local disp = protected.scrollingMessageFrame:GetNumLinesDisplayed()
-			local _, max = protected.slider:GetMinMaxValues()
-		
-			if (num <= disp) then
-				cur = 0
-				num = 0
-				disp = 0
-			end	
-
-			protected.slider:SetMinMaxValues(0, num-disp);
-			protected.slider:SetValue(num-disp-cur);
-
-			lockSliderOrScrollUpdate = false
-		end
+	local function OnScrollChanged(messageFrame, offset)
+		local num = messageFrame:GetNumMessages()
+		protected.slider:SetMinMaxValues(1, num)
+		protected.slider:SetValue(num - offset)
 	end
 
 	local function OnValueChanged(frame, value)
-		if (not lockSliderOrScrollUpdate) then
-			lockSliderOrScrollUpdate = true
-			
-			local num = protected.scrollingMessageFrame:GetNumMessages()
-			local disp = protected.scrollingMessageFrame:GetNumLinesDisplayed()
-			local cur = num - disp - floor(value)
+		local num = protected.scrollingMessageFrame:GetNumMessages()
+		local cur = num - floor(value)
+		protected.scrollingMessageFrame:SetScrollOffset(cur)
+	end
 
-			if (num <= disp) then
-				cur = 0
-			elseif (cur < 0) then
-				cur = 0
-			end		
-
-			protected.scrollingMessageFrame:SetScrollOffset(cur)
-			lockSliderOrScrollUpdate = false
-		end
+	local function OnShow(frame)
+		local num = protected.scrollingMessageFrame:GetNumMessages()
+		local offset = protected.scrollingMessageFrame:GetScrollOffset()
+		protected.slider:SetMinMaxValues(1, num)
+		protected.slider:SetValue(num - offset)
 	end
 
 	-- protected methods
@@ -228,13 +198,13 @@ function GnomTECWidgetScrollingMessage(init)
 		scrollingMessageFrame:SetMaxLines(1024)
 		
 		scrollingMessageFrame:SetScript("OnMouseWheel", OnMouseWheel)
-		-- following not working anymore with 7.1.0? 
-		-- scrollingMessageFrame:SetScript("OnMessageScrollChanged", OnMessageScrollChanged)
+		scrollingMessageFrame:SetOnScrollChangedCallback(OnScrollChanged);
 		
 		slider:SetScript("OnMouseWheel", OnMouseWheel)
 		slider:SetScript("OnValueChanged", OnValueChanged)
-		slider:SetMinMaxValues(0, 0)
-		slider:SetValue(0)
+		slider:SetScript("OnShow", OnShow)
+		slider:SetMinMaxValues(1, 1)
+		slider:SetValue(1)
 		slider:SetValueStep(1)
 				
 		if (init.parent) then

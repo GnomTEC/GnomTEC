@@ -145,7 +145,7 @@ function GnomTECWidgetContainerWindow(init)
 				value.widget:Hide()
 			end
 		end
-		PlaySound("igCharacterInfoTab")
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 	end
 	
 	-- protected methods

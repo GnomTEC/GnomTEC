@@ -122,13 +122,13 @@ function GnomTECWidgetBook(init)
 	local function OnClick_PrevPage(frame, button, down)
 		actualPage = actualPage - 1
 		self.ShowPage(actualPage)
-		PlaySound("igAbiliityPageTurn");
+		PlaySound(SOUNDKIT.IG_ABILITY_PAGE_TURN);
 	end
 
 	local function OnClick_NextPage(frame, button, down)
 		actualPage = actualPage + 1
 		self.ShowPage(actualPage)
-		PlaySound("igAbiliityPageTurn");
+		PlaySound(SOUNDKIT.IG_ABILITY_PAGE_TURN);
 	end
 
 	local function OnClick_Recite(frame, button, down)
@@ -151,7 +151,7 @@ function GnomTECWidgetBook(init)
 				if (actualPage < #(protected.book.pages)) then
 					actualPage = actualPage + 1
 					actualParagraph = 1
-					PlaySound("igAbiliityPageTurn");
+					PlaySound(SOUNDKIT.IG_ABILITY_PAGE_TURN);
 				end
 			end
 			self.ShowPage(actualPage, actualParagraph)
