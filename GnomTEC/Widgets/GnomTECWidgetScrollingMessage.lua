@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetScrollingMessage
--- Version: 7.3.0.11
+-- Version: 8.0.1.12
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2018 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetScrollingMessage-1.0", 11
+local MAJOR, MINOR = "GnomTECWidgetScrollingMessage-1.0", 12
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -108,10 +108,14 @@ function GnomTECWidgetScrollingMessage(init)
 	local function OnShow(frame)
 		local num = protected.scrollingMessageFrame:GetNumMessages()
 		local offset = protected.scrollingMessageFrame:GetScrollOffset()
-		protected.slider:SetMinMaxValues(1, num)
-		protected.slider:SetValue(num - offset)
+		if num > 0 then
+			protected.slider:SetMinMaxValues(1, num)
+			protected.slider:SetValue(num - offset)
+		else
+			protected.slider:SetMinMaxValues(1, 1)
+			protected.slider:SetValue(1)
+		end
 	end
-
 	-- protected methods
 	-- function protected.f()
 	

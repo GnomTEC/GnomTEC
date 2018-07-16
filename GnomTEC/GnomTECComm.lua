@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECComm Class
--- Version: 7.3.0.11
+-- Version: 8.0.1.12
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2018 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,8 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECComm-1.0", 11
+local MAJOR, MINOR = "GnomTECComm-1.0", 12
+
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -602,7 +603,7 @@ end
 -- ----------------------------------------------------------------------
 -- Register Class Static Event Handler (local)
 -- ----------------------------------------------------------------------
-if (not RegisterAddonMessagePrefix(ADDONMESSAGE_PREFIX)) then
+if (not C_ChatInfo.RegisterAddonMessagePrefix(ADDONMESSAGE_PREFIX)) then
 	-- !!! Probably nobody will receive this LogMessage as login is not set !!!
 	_LogMessage(LOG_FAIL,"RegisterAddonMessagePrefix(%s) failed", ADDONMESSAGE_PREFIX)
 else

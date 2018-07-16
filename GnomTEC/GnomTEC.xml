@@ -18,7 +18,9 @@
 	<Include file="Libs\AceTab-3.0\AceTab-3.0.xml"/>
 	<Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
 	<Include file="Libs\ChatThrottleLib\ChatThrottleLib.lua"/>
+<!-- LibTourist-3.0 is incompatible with BfA at the moment
 	<Include file="Libs\LibTourist-3.0\lib.xml"/>
+-->
 	<Include file="Libs\libdatabroker-1-1\LibDataBroker-1.1.lua"/>  
 	<Include file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>  
 

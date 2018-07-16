@@ -4,64 +4,76 @@
 	<Frame name="T_GNOMTECWIDGETSCROLLINGMESSAGE" hidden="true" virtual="true">
 		<Size x="128" y="128" />
 		<ResizeBounds>
-         <minResize>
-         	<AbsDimension x="1" y="1"/>
-      	</minResize>
-         <maxResize>
-         	<RelDimension x="1.0" y="1.0"/>
-      	</maxResize>
-      </ResizeBounds>
+			<minResize>
+				<AbsDimension x="1" y="1"/>
+			</minResize>
+			<maxResize>
+				<RelDimension x="1.0" y="1.0"/>
+			</maxResize>
+		</ResizeBounds>
         <Frames>
-      	<ScrollingMessageFrame name="$parentscrollingMessageFrame" parentKey="scrollingMessageFrame" fade="false">
-      		<Anchors>
-      			<Anchor point="TOPLEFT">
-     			     <Offset>
- 			           <AbsDimension x="0" y="0"/>
- 			        </Offset>
- 			     </Anchor>
-				<Anchor point="BOTTOMRIGHT">
-     			     <Offset>
- 			           <AbsDimension x="-16" y="0"/>
- 			        </Offset>
- 			     </Anchor>
-			</Anchors>
-			<Layers>
-				<Layer level="BACKGROUND">
-					<Texture parentKey="Background">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="-1" y="2" />
-							<Anchor point="BOTTOMRIGHT" x="1" y="-2" />
-						</Anchors>
-						<Color r=".1" g=".1" b=".1" a=".8"/>
-					</Texture>
-				</Layer>
-			</Layers>
-			<Scripts>
-				<OnLoad>
-					self:SetFading(false);
-					self:SetFontObject(ConsoleFontSmall);
-					self:SetJustifyH("LEFT");
-					self:SetHyperlinksEnabled(true);
-					self:SetTextCopyable(true);
-				</OnLoad>
-			</Scripts>
-      	</ScrollingMessageFrame>
-      	<Slider name="$parentslider" parentKey="slider">
-      		<Anchors>
-      			<Anchor point="TOPRIGHT">
-     			     <Offset>
- 			           <AbsDimension x="0" y="-18"/>
- 			        </Offset>
- 			     </Anchor>
-   		     <Anchor point="BOTTOMRIGHT">
-     			     <Offset>
- 			           <AbsDimension x="0" y="18"/>
- 			        </Offset>
- 			     </Anchor>
+			<ScrollingMessageFrame name="$parentscrollingMessageFrame" parentKey="scrollingMessageFrame" fade="false">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-22" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-1" y="2" />
+								<Anchor point="BOTTOMRIGHT" x="1" y="-2" />
+							</Anchors>
+							<Color r="0" g="0" b="0" a="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFading(false);
+						self:SetFontObject(ChatFontNormal);
+						self:SetIndentedWordWrap(true);
+						self:SetJustifyH("LEFT");
+						self:SetHyperlinksEnabled(true);
+						self:SetTextCopyable(true);
+					</OnLoad>
+				</Scripts>
+			</ScrollingMessageFrame>
+			<Slider name="$parentslider" parentKey="slider">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-18"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="18"/>
+						</Offset>
+					</Anchor>
 				</Anchors>
 				<Size>
 					<AbsDimension x="16" y="0"/>
 				</Size>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0" />
+								<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+							</Anchors>
+							<Color r="0" g="0" b="0" a="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
 				<Frames>
 					<Button name="$parentScrollUpButton" inherits="UIPanelScrollUpButtonTemplate">
 						<Anchors>
@@ -110,11 +122,6 @@
 								<AbsInset left="0" right="0" top="5" bottom="5"/>
 							</BackgroundInsets>
 						</Backdrop>
-						<Scripts>
-							<OnLoad>
-								self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b, 0.5);
-							</OnLoad>
-						</Scripts>
 					</Frame>
 				</Frames>
 				<ThumbTexture name="$parentThumbTexture" inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob">

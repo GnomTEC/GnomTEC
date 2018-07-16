@@ -1,5 +1,12 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 8.0.1.12 (2018-07-16)
+* Updated TOC for WoW patch 8.0.0 (BfA)
+* New LibMSP (breaks compatibility to pre8.0.0 flag addons)
+* Updated libraries: Ace3, ChatThrottleLib
+* removed event handler CHAT_MSG_BATTLEGROUND (not available since BfA)
+* Known issue: disabled LibTourist-3.0 as it is not BfA compaible yet
+
 === 7.3.0.11 (2017-09-02)
 * fixed PlaySound() issues
 * patched LibTourist-3.0 as workaround until new release for 7.3 for this library

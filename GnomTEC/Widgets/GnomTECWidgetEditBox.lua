@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetEditBox
--- Version: 7.3.0.11
+-- Version: 8.0.1.12
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2018 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetEditBox-1.0", 11
+local MAJOR, MINOR = "GnomTECWidgetEditBox-1.0", 12
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -75,7 +75,7 @@ function GnomTECWidgetEditBox(init)
 	-- protected fields go in the protected table
 	-- protected.field = value
 	protected.scrollFrame = nil
-	protected.editBoxFrame = nil
+	protected.editBox = nil
 	protected.slider = nil
 	protected.multiLine = nil
 	
@@ -97,28 +97,19 @@ function GnomTECWidgetEditBox(init)
 			lockSliderOrScrollUpdate = false
 		end
 	end
-
-	local function OnClickUpButton(frame, button)
-		protected.slider:SetValue(protected.slider:GetValue() - 14)
-		PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
-	end
-
-	local function OnClickDownButton(frame, button)
-		protected.slider:SetValue(protected.slider:GetValue() + 14)
-		PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
-	end
 	
-	local function OnChangedSizeWidgetFrame(frame, width, height)
-		protected.editBoxFrame:SetWidth(protected.widgetFrame:GetWidth() - 16)
-		protected.editBoxFrame:SetHeight(protected.widgetFrame:GetHeight())	
-	end
-	
+    local function OnChangedSizeWidgetFrame(frame, width, height)
+        protected.editBox:SetWidth(protected.scrollFrame:GetWidth())
+        protected.editBox:SetHeight(protected.scrollFrame:GetHeight())    
+    end
+
+
 	local function OnSizeChangedEditBox(frame, width, height)
 		protected.scrollFrame:UpdateScrollChildRect();
 	end
 
 	local function OnEscapePressed(frame)
-		protected.editBoxFrame:ClearFocus();
+		protected.editBox:ClearFocus();
 	end
 	
 	local function OnScrollRangeChanged(frame, xExtent, yExtent)
@@ -195,7 +186,7 @@ function GnomTECWidgetEditBox(init)
 		protected.widgetFrame:SetHeight(pixelHeight)
 		
 		if (not protected.multiLine) then
-			protected.widgetFrame:SetCursorPosition(0)
+			protected.editBox:SetCursorPosition(0)
 		end
 
 		return pixelWidth, pixelHeight
@@ -206,22 +197,22 @@ function GnomTECWidgetEditBox(init)
 		protected.widgetFrame:SetHeight(pixelHeight)
 
 		if (not protected.multiLine) then
-			protected.widgetFrame:SetCursorPosition(0)
+			protected.editBox:SetCursorPosition(0)
 		end
 
 		return pixelWidth, pixelHeight
 	end
 	
 	function self.SetText(text)
-		protected.editBoxFrame:SetText(text or "")
+		protected.editBox:SetText(text or "")
 	end
 
 	function self.GetText()
-		return protected.editBoxFrame:GetText()
+		return protected.editBox:GetText()
 	end
 
 	function self.SetFocus()
-		protected.editBoxFrame:SetFocus()
+		protected.editBox:SetFocus()
 	end
 	
 	
@@ -239,20 +230,16 @@ function GnomTECWidgetEditBox(init)
 		end
 		
 		if (protected.multiLine) then
-			local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent)
+			local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent,"T_GNOMTECWIDGETEDITBOX_MULTILINE")
+			local scrollFrame = widgetFrame.scrollFrame
+			local editBox = scrollFrame.editBox
+			local slider = widgetFrame.slider
 			widgetFrame:Hide()
 
-			local editBoxFrame = CreateFrame("EditBox", nil, widgetFrame)
-
-			local scrollFrame = CreateFrame("ScrollFrame", nil, widgetFrame)
-			local slider = CreateFrame("Slider", nil, widgetFrame)
-			local upButton = CreateFrame("Button", nil, slider, "UIPanelScrollUpButtonTemplate")
-			local downButton = CreateFrame("Button", nil, slider, "UIPanelScrollDownButtonTemplate")
-
 			protected.widgetFrame = widgetFrame 
-			protected.editBoxFrame = editBoxFrame 
+			protected.editBox = editBox 
 			protected.scrollFrame = scrollFrame 
-			protected.slider = slider 
+			protected.slider = slider
 
 			widgetFrame:SetPoint("CENTER")		
 			local w, r = self.GetWidth()
@@ -269,54 +256,38 @@ function GnomTECWidgetEditBox(init)
 				widgetFrame:SetHeight("100")
 			end
 			
-			widgetFrame:SetScript("OnSizeChanged", OnChangedSizeWidgetFrame)
+            widgetFrame:SetScript("OnSizeChanged", OnChangedSizeWidgetFrame)
 
-			scrollFrame:SetPoint("TOPLEFT", 0, 0)	
-			scrollFrame:SetPoint("BOTTOMRIGHT", -16, 0)	
 			scrollFrame:SetScript("OnScrollRangeChanged", OnScrollRangeChanged)
 			scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
-			scrollFrame:SetScrollChild(editBoxFrame)
-			
-			editBoxFrame:SetPoint("TOPLEFT", 0, 0)	
-			editBoxFrame:SetPoint("BOTTOMRIGHT", -16, 0)	
+	
+            editBox:SetHeight(widgetFrame:GetHeight())    
+            editBox:SetWidth(widgetFrame:GetWidth() - 16)    
+			editBox:SetMultiLine(true)
+			editBox:SetFontObject(ChatFontNormal)
+			editBox:SetJustifyH("LEFT")
+			editBox:EnableKeyboard(true);
+			editBox:EnableMouse(true);			
+			editBox:SetAutoFocus(false);			
+			editBox:SetScript("OnMouseWheel", OnMouseWheel)
+			editBox:SetScript("OnSizeChanged", OnSizeChangedEditBox)
+			editBox:SetScript("OnEscapePressed", OnEscapePressed)
+			editBox:SetScript("OnCursorChanged", OnCursorChanged)
 
-			editBoxFrame:SetHeight(widgetFrame:GetHeight())	
-			editBoxFrame:SetWidth(widgetFrame:GetWidth() - 16)	
-			editBoxFrame:SetMultiLine(true)
-			editBoxFrame:SetFontObject(ChatFontNormal)
-			editBoxFrame:SetJustifyH("LEFT")
-			editBoxFrame:EnableKeyboard(true);
-			editBoxFrame:EnableMouse(true);			
-			editBoxFrame:SetAutoFocus(false);			
-			editBoxFrame:SetScript("OnMouseWheel", OnMouseWheel)
-			editBoxFrame:SetScript("OnSizeChanged", OnSizeChangedEditBox)
-			editBoxFrame:SetScript("OnEscapePressed", OnEscapePressed)
-			editBoxFrame:SetScript("OnCursorChanged", OnCursorChanged)
-
-			slider:SetWidth(16)
-			slider:SetPoint("TOPRIGHT", 0, -8)	
-			slider:SetPoint("BOTTOMRIGHT", 0, 8)	
-			slider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]])
 			slider:SetScript("OnMouseWheel", OnMouseWheel)
 			slider:SetScript("OnValueChanged", OnValueChanged)
+			slider:SetValueStep(14)
 
-			upButton:SetPoint("TOP", slider, "TOP", 0, 8)
-			upButton:SetScript("OnMouseWheel", OnMouseWheel)
-			upButton:SetScript("OnClick", OnClickUpButton)
-
-			downButton:SetPoint("BOTTOM", slider, "BOTTOM", 0, -8)
-			downButton:SetScript("OnMouseWheel", OnMouseWheel)
-			downButton:SetScript("OnClick", OnClickDownButton)
-				
 			scrollFrame:UpdateScrollChildRect();
 			slider:SetMinMaxValues(0, scrollFrame:GetVerticalScrollRange());
 			slider:SetValue(scrollFrame:GetVerticalScroll());   
 		else
-			local widgetFrame = CreateFrame("EditBox", protected.widgetUID, UIParent,"T_GNOMTECWIDGETEDITBOX")
+			local widgetFrame = CreateFrame("Frame", protected.widgetUID, UIParent,"T_GNOMTECWIDGETEDITBOX")
+			local editBox = widgetFrame.editBox
 			widgetFrame:Hide()
 
 			protected.widgetFrame = widgetFrame 
-			protected.editBoxFrame = widgetFrame 
+			protected.editBox = editBox
 			
 			widgetFrame:SetPoint("CENTER")		
 			local w, r = self.GetWidth()
@@ -329,13 +300,13 @@ function GnomTECWidgetEditBox(init)
 			protected.widgetHeightIsRelative = false
 			widgetFrame:SetHeight(protected.widgetHeight)
 
-			widgetFrame:SetMultiLine(false)
-			widgetFrame:SetFontObject(ChatFontNormal)
-			widgetFrame:SetJustifyH("LEFT")
-			widgetFrame:EnableKeyboard(true);
-			widgetFrame:EnableMouse(true);			
-			widgetFrame:SetAutoFocus(false);			
-			widgetFrame:SetScript("OnEscapePressed", OnEscapePressed)
+			editBox:SetMultiLine(false)
+			editBox:SetFontObject(ChatFontNormal)
+			editBox:SetJustifyH("LEFT")
+			editBox:EnableKeyboard(true);
+			editBox:EnableMouse(true);			
+			editBox:SetAutoFocus(false);			
+			editBox:SetScript("OnEscapePressed", OnEscapePressed)
 		end	
 
 		self.SetText(init.text)

@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECClassCharacter
--- Version: 7.3.0.11
+-- Version: 8.0.1.12
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2018 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 11
+local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 12
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -54,7 +54,9 @@ class.characters = {}
 -- Class Startup Initialization
 -- ----------------------------------------------------------------------
 class.aceEvent = class.aceEvent or LibStub("AceEvent-3.0")
-class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
+-- LibTourist is incompatible with BfA at the moment
+-- class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
+
 -- ----------------------------------------------------------------------
 -- Helper Functions (local)
 -- ----------------------------------------------------------------------
@@ -173,16 +175,7 @@ local function _UPDATE_MOUSEOVER_UNIT(eventName)
  	end
  end
  
- function _CHAT_MSG_BATTLEGROUND(eventName, message, sender)	
-	-- update character information of sender
-	sender = fullunitname(sender)
-	
-	if (emptynil(sender)) then
-		GnomTECClassCharacter(sender)
-	end
-end
-
-function _CHAT_MSG_CHANNEL(eventName, message, sender)	
+ function _CHAT_MSG_CHANNEL(eventName, message, sender)	
 	-- update character information of sender
 	sender = fullunitname(sender)
 	
@@ -285,7 +278,6 @@ end
 -- Register Class Static Event Handler (local)
 -- ----------------------------------------------------------------------
 class.aceEvent.RegisterEvent(class,"UPDATE_MOUSEOVER_UNIT", _UPDATE_MOUSEOVER_UNIT)
-class.aceEvent.RegisterEvent(class,"CHAT_MSG_BATTLEGROUND", _CHAT_MSG_BATTLEGROUND);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL", _CHAT_MSG_CHANNEL);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_CHANNEL_JOIN", _CHAT_MSG_CHANNEL_JOIN);
 class.aceEvent.RegisterEvent(class,"CHAT_MSG_EMOTE", _CHAT_MSG_EMOTE);
