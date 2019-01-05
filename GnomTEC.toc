@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: GnomTEC
 ## Notes: GnomTEC Addon Framework.
 ## Notes-deDE: GnomTEC Addon Framework.
@@ -12,7 +12,7 @@
 ## Notes-zhCN: GnomTEC Addon Framework.
 ## Notes-zhTW: GnomTEC Addon Framework.
 ## Author: Peter Jack
-## Version: 8.0.1.12
+## Version: 8.1.0.13
 ## SavedVariables: GnomTEC_DB
 
 GnomTEC\GnomTEC.xml

@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECClassCharacter
--- Version: 8.0.1.12
+-- Version: 8.1.0.13
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2018 by Peter Jack
+-- Copyright © 2014-2019 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 12
+local MAJOR, MINOR = "GnomTECClassCharacter-1.0", 13
 local class, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not class then return end -- No Upgrade needed.
@@ -54,8 +54,7 @@ class.characters = {}
 -- Class Startup Initialization
 -- ----------------------------------------------------------------------
 class.aceEvent = class.aceEvent or LibStub("AceEvent-3.0")
--- LibTourist is incompatible with BfA at the moment
--- class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
+class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
 
 -- ----------------------------------------------------------------------
 -- Helper Functions (local)

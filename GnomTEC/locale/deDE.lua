@@ -1,10 +1,10 @@
 -- **********************************************************************
 -- GnomTEC Localization - deDE
--- Version: 7.3.0.11
+-- Version: 8.1.0.13
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2019 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -29,7 +29,7 @@ local L = AceLocale:NewLocale("GnomTEC", "deDE")
 if not L then return end
 
 L["L_OPTIONS_TITLE"] = "GnomTEC Framework\n\n"
-L["L_ERROR_FRAMEWORKREVISION"] = "Das installierte GnomTEC Framework scheint zu alt für einige Addons zu sein.\n\nDiese Addons werden nicht gestartet solange das Framework nicht aktualisiert wird.\n\nSiehe http://www.curse.com/addons/wow/gnomtec für eine neuere Version."
+L["L_ERROR_FRAMEWORKREVISION"] = "Das installierte GnomTEC Framework scheint zu alt für einige Addons zu sein.\n\nDiese Addons werden nicht gestartet solange das Framework nicht aktualisiert wird.\n\nSiehe https://www.curseforge.com/wow/addons/gnomtec für eine neuere Version."
 
 
 

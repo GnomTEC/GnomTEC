@@ -51,7 +51,7 @@ function AddOn_Chomp.NameMergedRealm(name, realm)
 	elseif name:find(FULL_PLAYER_FIND) then
 		error("AddOn_Chomp.NameMergedRealm(): name already has a realm name, but realm name also provided")
 	end
-	return FULL_PLAYER_NAME:format(name, (realm:gsub("%s*%-*", "")))
+	return FULL_PLAYER_NAME:format(name, (realm:gsub("[%s%-]", "")))
 end
 
 local Serialize = {}
@@ -107,6 +107,21 @@ function AddOn_Chomp.Serialize(object)
 	return serialized
 end
 
+local IsTableSafe
+function IsTableSafe(t)
+	for k,v in pairs(t) do
+		local typeK, typeV = type(k), type(v)
+		if not Serialize[typeK] or not Serialize[typeV] then
+			return false
+		elseif typeK == "table" and not IsTableSafe(k) then
+			return false
+		elseif typeV == "table" and not IsTableSafe(v) then
+			return false
+		end
+	end
+	return true
+end
+
 local EMPTY_ENV = setmetatable({}, {
 	__newindex = function() end,
 	__metatable = false,
@@ -116,16 +131,19 @@ function AddOn_Chomp.Deserialize(text)
 	if type(text) ~= "string" then
 		error("AddOn_Chomp.Deserialize(): text: expected string, got " .. type(text), 2)
 	end
-	local success, func = pcall(loadstring, ("return %s"):format(text))
-	if not success then
+	local func = loadstring(("return %s"):format(text))
+	if not func then
 		error("AddOn_Chomp.Deserialize(): text: could not be loaded via loadstring", 2)
 	end
 	setfenv(func, EMPTY_ENV)
 	local retSuccess, ret = pcall(func)
+	local retType = type(ret)
 	if not retSuccess then
 		error("AddOn_Chomp.Deserialize(): text: error while reading data", 2)
-	elseif not Serialize[type(ret)] then
+	elseif not Serialize[retType] then
 		error("AddOn_Chomp.Deserialize(): text: deserialized to invalid type: " .. type(ret), 2)
+	elseif retType == "table" and text:find("function", nil, true) and not IsTableSafe(ret) then
+		error("AddOn_Chomp.Deserialize(): text: deserialized table included forbidden type", 2)
 	end
 	return ret
 end
@@ -144,12 +162,16 @@ function AddOn_Chomp.CheckLoggedContents(text)
 		return false, "UTF8_MULTIPLE_LEADING"
 	elseif text:find("\224[\128-\159][\128-\191]") or text:find("\240[\128-\143][\128-\191][\128-\191]") or text:find("\244[\143-\191][\128-\191][\128-\191]") then
 		return false, "UTF8_MALFORMED"
+	elseif text:find("\237\158[\154-\191]") or text:find("\237[\159-\191][\128-\191]") then
+		return false, "UTF16_RESERVED"
 	elseif text:find("[\194-\244]%f[^\128-\191\194-\244]") or text:find("[\224-\244][\128-\191]%f[^\128-\191]") or text:find("[\240-\244][\128-\191][\128-\191]%f[^\128-\191]") then
 		return false, "UTF8_MISSING_CONTINUATION"
 	elseif text:find("%f[\128-\191\194-\244][\128-\191]+") then
 		return false, "UTF8_MISSING_LEADING"
 	elseif text:find("[\194-\223][\128-\191][\128-\191]+") or text:find("[\224-\239][\128-\191][\128-\191][\128-\191]+") or text:find("[\240-\244][\128-\191][\128-\191][\128-\191][\128-\191]+") then
 		return false, "UTF8_EXTRA_CONTINUATION"
+	elseif text:find("\239\191[\190\191]") then
+		return false, "UNICODE_INVALID"
 	end
 	return true, nil
 end
@@ -176,27 +198,34 @@ function Internal.EncodeQuotedPrintable(text, restrictBinary)
 
 		-- Bytes not used in UTF-8 ever.
 		text = text:gsub("[\192\193\245-\255]", CharToQuotedPrintable)
-	
+
 		-- Multiple leading bytes.
 		text = text:gsub("[\194-\244]+[\194-\244]", function(s)
 			return (s:gsub(".", CharToQuotedPrintable, #s - 1))
 		end)
-	
+
 		--- Unicode 11.0.0, Table 3-7 malformed UTF-8 byte sequences.
 		text = text:gsub("\224[\128-\159][\128-\191]", StringToQuotedPrintable)
 		text = text:gsub("\240[\128-\143][\128-\191][\128-\191]", StringToQuotedPrintable)
 		text = text:gsub("\244[\143-\191][\128-\191][\128-\191]", StringToQuotedPrintable)
-	
+
+		-- UTF-16 reserved codepoints
+		text = text:gsub("\237\158[\154-\191]", StringToQuotedPrintable)
+		text = text:gsub("\237[\159-\191][\128-\191]", StringToQuotedPrintable)
+
+		-- Unicode invalid codepoints
+		text = text:gsub("\239\191[\190\191]", StringToQuotedPrintable)
+
 		-- 2-4-byte leading bytes without enough continuation bytes.
 		text = text:gsub("[\194-\244]%f[^\128-\191\194-\244]", CharToQuotedPrintable)
 		-- 3-4-byte leading bytes without enough continuation bytes.
 		text = text:gsub("[\224-\244][\128-\191]%f[^\128-\191]", StringToQuotedPrintable)
 		-- 4-byte leading bytes without enough continuation bytes.
 		text = text:gsub("[\240-\244][\128-\191][\128-\191]%f[^\128-\191]", StringToQuotedPrintable)
-	
+
 		-- Continuation bytes without leading bytes.
 		text = text:gsub("%f[\128-\191\194-\244][\128-\191]+", StringToQuotedPrintable)
-	
+
 		-- 2-byte character with too many continuation bytes
 		text = text:gsub("([\194-\223][\128-\191])([\128-\191]+)", TooManyContinuations)
 		-- 3-byte character with too many continuation bytes
@@ -244,6 +273,13 @@ function AddOn_Chomp.EncodeQuotedPrintable(text)
 	text = text:gsub("\224[\128-\159][\128-\191]", StringToQuotedPrintable)
 	text = text:gsub("\240[\128-\143][\128-\191][\128-\191]", StringToQuotedPrintable)
 	text = text:gsub("\244[\143-\191][\128-\191][\128-\191]", StringToQuotedPrintable)
+
+	-- UTF-16 reserved codepoints
+	text = text:gsub("\237\158[\154-\191]", StringToQuotedPrintable)
+	text = text:gsub("\237[\159-\191][\128-\191]", StringToQuotedPrintable)
+
+	-- Unicode invalid codepoints
+	text = text:gsub("\239\191[\190\191]", StringToQuotedPrintable)
 
 	-- 2-4-byte leading bytes without enough continuation bytes.
 	text = text:gsub("[\194-\244]%f[^\128-\191\194-\244]", CharToQuotedPrintable)

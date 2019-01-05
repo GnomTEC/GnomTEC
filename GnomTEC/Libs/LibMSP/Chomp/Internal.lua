@@ -14,7 +14,7 @@
 	CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ]]
 
-local VERSION = 2
+local VERSION = 7
 
 if IsLoggedIn() then
 	error(("Chomp Message Library (embedded: %s) cannot be loaded after login."):format((...)))
@@ -97,7 +97,7 @@ end
 
 local oneTimeError
 local function HandleMessageIn(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
-	if not IsLoggedIn() then
+	if not Internal.isReady then
 		if not Internal.IncomingQueue then
 			Internal.IncomingQueue = {}
 		end
@@ -146,7 +146,7 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 			return
 		end
 		if msgID == 1 then
-			local broadcastTarget, userText = text:match("^([^\127]*)\127(.*)$")
+			local broadcastTarget, userText = text:match("^([^\058\127]*)[\058\127](.*)$")
 			local ourName = AddOn_Chomp.NameMergedRealm(UnitFullName("player"))
 			if sender == ourName or broadcastTarget ~= "" and broadcastTarget ~= ourName then
 				-- Not for us, quit processing.
@@ -200,8 +200,9 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 				if deserialize then
 					local success, original = pcall(AddOn_Chomp.Deserialize, handlerData)
 					if success then
-						-- TODO: Handle failure some other way?
 						handlerData = original
+					else
+						handlerData = nil
 					end
 				end
 			end
@@ -234,6 +235,10 @@ end
 
 local function ParseBattleNetMessage(prefix, text, kind, bnetIDGameAccount)
 	local active, characterName, client, realmName = BNGetGameAccountInfo(bnetIDGameAccount)
+	-- Build 27144: This can now be nil after removing someone from BattleTag.
+	if not characterName then
+		return
+	end
 	local name = AddOn_Chomp.NameMergedRealm(characterName, realmName)
 	return prefix, text, ("%s:BATTLENET"):format(kind), name, AddOn_Chomp.NameMergedRealm(UnitName("player")), 0, 0, "", 0
 end
@@ -351,7 +356,7 @@ end
 ]]
 
 -- Hooks don't trigger if the hooked function errors, so there's no need to
--- check parameters.
+-- check parameters, if those parameters cause errors (which most don't now).
 
 local function MessageEventFilter_SYSTEM (self, event, text)
 	local name = text:match(ERR_CHAT_PLAYER_NOT_FOUND_S:format("(.+)"))
@@ -405,6 +410,18 @@ local function HookBNSendWhisper(bnetIDAccount, text)
 	Internal.bytes = Internal.bytes - (length + OVERHEAD)
 end
 
+local function HookC_ClubSendMessage(clubID, streamID, text)
+	if Internal.isSending then return end
+	local length = #tostring(text)
+	Internal.bytes = Internal.bytes - (length + OVERHEAD)
+end
+
+local function HookC_ClubEditMessage(clubID, streamID, messageID, text)
+	if Internal.isSending then return end
+	local length = #tostring(text)
+	Internal.bytes = Internal.bytes - (length + OVERHEAD)
+end
+
 --[[
 	FRAME SCRIPTS
 ]]
@@ -431,21 +448,24 @@ Internal:SetScript("OnEvent", function(self, event, ...)
 		hooksecurefunc("SendChatMessage", HookSendChatMessage)
 		hooksecurefunc("BNSendGameData", HookBNSendGameData)
 		hooksecurefunc("BNSendWhisper", HookBNSendWhisper)
+		hooksecurefunc(C_Club, "SendMessage", HookC_ClubSendMessage)
+		hooksecurefunc(C_Club, "EditMessage", HookC_ClubEditMessage)
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", MessageEventFilter_SYSTEM)
 		self.SameRealm = {}
-		self.SameRealm[(GetRealmName():gsub("%s*%-*", ""))] = true
+		self.SameRealm[(GetRealmName():gsub("[%s%-]", ""))] = true
 		for i, realm in ipairs(GetAutoCompleteRealms()) do
-			self.SameRealm[(realm:gsub("%s*%-*", ""))] = true
+			self.SameRealm[(realm:gsub("[%s%-]", ""))] = true
 		end
+		Internal.isReady = true
 		if self.IncomingQueue then
 			for i, q in ipairs(self.IncomingQueue) do
-				HandleMessageIn(table.unpack(q, 1, 4))
+				HandleMessageIn(unpack(q, 1, 4))
 			end
 			self.IncomingQueue = nil
 		end
 		if self.OutgoingQueue then
 			for i, q in ipairs(self.OutgoingQueue) do
-				AddOn_Chomp[q.f](table.unpack(q, 1, q.n))
+				AddOn_Chomp[q.f](unpack(q, 1, q.n))
 			end
 			self.OutgoingQueue = nil
 		end

@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetEditBox
--- Version: 8.0.1.12
+-- Version: 8.1.0.13
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2018 by Peter Jack
+-- Copyright © 2014-2019 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetEditBox-1.0", 12
+local MAJOR, MINOR = "GnomTECWidgetEditBox-1.0", 13
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -88,6 +88,10 @@ function GnomTECWidgetEditBox(init)
 	-- local function f()
 	local function OnMouseWheel(frame, delta)
 		protected.slider:SetValue(protected.slider:GetValue() - delta*14);
+	end
+
+	local function OnMouseDown(frame, button)
+		protected.editBox:SetFocus()
 	end
 
 	local function OnValueChanged(frame, value)
@@ -260,6 +264,7 @@ function GnomTECWidgetEditBox(init)
 
 			scrollFrame:SetScript("OnScrollRangeChanged", OnScrollRangeChanged)
 			scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
+			scrollFrame:SetScript("OnMouseDown", OnMouseDown)
 	
             editBox:SetHeight(widgetFrame:GetHeight())    
             editBox:SetWidth(widgetFrame:GetWidth() - 16)    

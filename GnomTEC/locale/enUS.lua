@@ -1,10 +1,10 @@
 -- **********************************************************************
 -- GnomTEC Localization - enUS / enGB
--- Version: 7.3.0.11
+-- Version: 8.1.0.13
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2017 by Peter Jack
+-- Copyright © 2014-2019 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -29,4 +29,4 @@ local L = AceLocale:NewLocale("GnomTEC", "enUS", true)
 if not L then return end
 
 L["L_OPTIONS_TITLE"] = "GnomTEC Framework\n\n"
-L["L_ERROR_FRAMEWORKREVISION"] = "The installed version of GnomTEC framework seems to be to old for some addons.\n\nThese addons won't be started until you update the framework.\n\nSee http://www.curse.com/addons/wow/gnomtec for a newer version."
+L["L_ERROR_FRAMEWORKREVISION"] = "The installed version of GnomTEC framework seems to be to old for some addons.\n\nThese addons won't be started until you update the framework.\n\nSee https://www.curseforge.com/wow/addons/gnomtec for a newer version."

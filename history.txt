@@ -1,5 +1,11 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 8.1.0.13 (2019-01-05)
+* Updated TOC for WoW patch 8.1.0 (BfA)
+* Updated libraries: Ace3, LibMSP, LibTourist, LibDBIcon
+* enabled LibTourist-3.0 as it is now BfA compaible
+* fixed GnomTECWidgetEditBox focus issue when clicking in area where is no line yet
+
 === 8.0.1.12 (2018-07-16)
 * Updated TOC for WoW patch 8.0.0 (BfA)
 * New LibMSP (breaks compatibility to pre8.0.0 flag addons)

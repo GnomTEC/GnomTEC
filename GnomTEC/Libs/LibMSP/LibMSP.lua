@@ -31,9 +31,9 @@
 	- For more information, see documentation on the Mary Sue Protocol - http://moonshyne.org/msp/
 ]]
 
-local VERSION = 12
+local VERSION = 15
 local PROTOCOL_VERSION = 3
-local CHOMP_VERSION = 1
+local CHOMP_VERSION = 6
 
 if IsLoggedIn() then
 	error(("LibMSP (embedded in: %s) cannot be loaded after login."):format((...)))
@@ -56,7 +56,7 @@ local TT_LIST = { "VP", "VA", "NA", "NH", "NI", "NT", "RA", "CU", "FR", "FC" }
 local TT_ALL = {
 	VP = true, VA = true, NA = true, NH = true,	NI = true, NT = true,
 	RA = true, CU = true, FR = true, FC = true,	RC = true, CO = true,
-	IC = true,
+	IC = true, PX = true,
 }
 local UNIT_FIELD = { GC = true, GF = true, GR = true, GS = true, GU = true, }
 local INTERNAL_FIELDS = {
@@ -168,8 +168,8 @@ for constField, isField in pairs(TT_ALL) do
 	end
 end
 
--- This constant is intended for public use.
-msp.INTERNAL_FIELDS = INTERNAL_FIELDS
+-- This constant is intended for public use, but not modification.
+msp.INTERNAL_FIELDS = setmetatable({}, { __index = INTERNAL_FIELDS, __metatable = false, })
 
 local function RunCallback(callbackName, ...)
 	for i, func in ipairs(msp.callback[callbackName]) do
@@ -311,7 +311,7 @@ local charMeta = {
 	end,
 }
 
-setmetatable(msp.char, {
+local mspCharMeta = {
 	__index = function(self, name)
 		-- Account for unmaintained code using names without realms.
 		name = AddOn_Chomp.NameMergedRealm(name)
@@ -326,7 +326,9 @@ setmetatable(msp.char, {
 		-- to create anything here.
 		return
 	end,
-})
+}
+
+setmetatable(msp.char, mspCharMeta)
 
 for charName, charTable in pairs(msp.char) do
 	setmetatable(charTable, charMeta)
@@ -349,7 +351,8 @@ msp.myver = setmetatable({}, {
 		end
 		return tonumber(CRC32CCache[msp.my[field]], 16)
 	end,
-	__newindex = function() end
+	__newindex = function() end,
+	__metatable = false,
 })
 
 local function AddTTField(field)
@@ -398,6 +401,10 @@ function Process(name, command, isSafe)
 	local crcNum = tonumber(crc, 16)
 	local now = GetTime()
 	if action == "?" then
+		if not msp.ttCache then
+			-- If an update hasn't successfully run, don't respond to requests.
+			return
+		end
 		if msp.ttAll[field] then
 			field = "TT"
 		end
@@ -409,9 +416,6 @@ function Process(name, command, isSafe)
 		if field == "TT" then
 			-- This all has to be duplicated for TT since the original header
 			-- documentation lied.
-			if not msp.ttCache or not msp.ttContents then
-				msp:Update()
-			end
 			if crc ~= CRC32CCache[msp.ttContents] then
 				if not msp.char[name].safeReply then
 					msp.char[name].safeReply = {}
@@ -578,11 +582,14 @@ local function EventFrame_Handler(self, event, ...)
 		if GF == "Neutral" then
 			self:RegisterEvent("NEUTRAL_FACTION_SELECT_RESULT")
 		end
+		emptyMeta.__metatable = false
+		charMeta.__metatable = false
+		mspCharMeta.__metatable = false
 	elseif event == "NEUTRAL_FACTION_SELECT_RESULT" then
 		local GF = UnitFactionGroup("player")
 		msp.my.GF = tostring(GF)
 	end
-	if msp.firstUpdateRun then
+	if msp.ttCache then
 		msp:Update()
 	end
 end
@@ -590,6 +597,9 @@ msp.eventFrame:SetScript("OnEvent", EventFrame_Handler)
 msp.eventFrame:RegisterEvent("PLAYER_LOGIN")
 
 function msp:Update()
+	if not msp.my.VA or msp.my.VA == "" then
+		error("msp:Update(): msp.my.VA is absent, assuming profile is not set. Update aborted.")
+	end
 	local updated = false
 	-- Remember, charTable.field will return "" for empty fields.
 	local charTable = self.char[PLAYER_NAME]
@@ -615,12 +625,13 @@ function msp:Update()
 			end
 			if contents and not AddOn_Chomp.CheckLoggedContents(contents) then
 				self.my[field] = charTable.field[field] ~= "" and charTable.field[field] or nil
-				geterrorhandler()(("LibMSP: Found illegal byte or sequence in field %s, contents reverted to last known-good value."):format(field))
+				geterrorhandler()(("msp:Update(): Found illegal byte or sequence in field %s, contents reverted to last known-good value."):format(field))
 			elseif charTable.field[field] ~= (contents or "") then
 				updated = true
 				charTable.field[field] = contents
 				local version = self.myver[field]
 				charTable.ver[field] = version
+				charTable.time[field] = TIME_MAX
 				RunCallback("updated", PLAYER_NAME, field, contents, version)
 			end
 		end
@@ -638,10 +649,10 @@ function msp:Update()
 		self.ttCache = ("%s%sTT%s"):format(self.ttContents, SEPARATOR, CRC32CCache[self.ttContents])
 		local version = self.myver.TT
 		charTable.ver.TT = version
+		charTable.time.TT = TIME_MAX
 		RunCallback("updated", PLAYER_NAME, "TT", nil, version)
 		RunCallback("received", PLAYER_NAME)
 	end
-	self.firstUpdateRun = true
 	return updated
 end
 
@@ -740,6 +751,6 @@ end
 
 msp.version = VERSION
 
-if msp.firstUpdateRun then
+if msp.ttCache then
 	msp:Update()
 end
