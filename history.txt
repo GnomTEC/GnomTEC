@@ -1,5 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 8.1.5.14 (2019-03-28)
+* Fixed issue with incorrect contents of "GnomTEC\Libs\LibDBIcon-1.0\"-folder
+
 === 8.1.0.13 (2019-01-05)
 * Updated TOC for WoW patch 8.1.0 (BfA)
 * Updated libraries: Ace3, LibMSP, LibTourist, LibDBIcon
