@@ -1,5 +1,10 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+
+=== 8.2.5.15-classic (2019-11-09)
+* Updated TOC for WoW patch 1.13.2 (Classic)
+* LibTourist-3.0 removed as not used yet (there are different versiond for retail and classic
+
 === 8.2.0.14 (2019-06-26)
 * Updated TOC for WoW patch 8.2.0 (BfA)
 

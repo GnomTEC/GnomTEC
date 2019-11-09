@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTECClassCharacter
--- Version: 8.1.0.13
+-- Version: 8.2.5.15
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -54,7 +54,6 @@ class.characters = {}
 -- Class Startup Initialization
 -- ----------------------------------------------------------------------
 class.aceEvent = class.aceEvent or LibStub("AceEvent-3.0")
-class.libTourist = class.libTourist or LibStub("LibTourist-3.0")
 
 -- ----------------------------------------------------------------------
 -- Helper Functions (local)
