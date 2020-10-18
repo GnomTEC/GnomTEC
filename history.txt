@@ -1,5 +1,10 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 9.0.1.17 (2020-10-19)
+* Updated TOC for WoW patch 9.0.1
+* Updated libraries: Ace3, libMSP
+* Changed Backdrop elements in GUI xml
+
 === 8.2.5.16-classic (2019-12-22)
 * Updated TOC for WoW patch 1.13.3 (Classic)
 
