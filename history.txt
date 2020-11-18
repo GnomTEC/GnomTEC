@@ -1,5 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 9.0.2.17 (2020-11-18)
+* Updated TOC for WoW patch 9.0.2
+
 === 9.0.1.17 (2020-10-19)
 * Updated TOC for WoW patch 9.0.1
 * Updated libraries: Ace3, libMSP
