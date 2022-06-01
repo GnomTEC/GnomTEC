@@ -99,7 +99,7 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Frame name="$parentBorder">
+					<Frame name="$parentBorder" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x="24" y="0"/>
 						</Size>
@@ -111,17 +111,9 @@
 								<Offset x="5" y="-3"/>
 							</Anchor>
 						</Anchors>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="12"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="0" right="0" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="GNOMTEC_BACKDROP_WIDGET_SCROLLINGMESSAGE" type="global"/>
+						</KeyValues>
 					</Frame>
 				</Frames>
 				<ThumbTexture name="$parentThumbTexture" inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob">

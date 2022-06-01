@@ -1,5 +1,9 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 9.2.5.18 (2022-06-01)
+* Updated TOC for WoW patch 9.2.5
+* Fixed backdrops of frames
+
 === 9.2.0.18 (2022-03-12)
 * Updated TOC for WoW patch 9.2.0
 

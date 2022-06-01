@@ -56,7 +56,7 @@
 	</Frame>
 
 	<!-- T_GNOMTECWIDGETEDITBOX_MULTILINE: Multiline template for GnomTECWidgetEditBox-->
-	<Frame name="T_GNOMTECWIDGETEDITBOX_MULTILINE" hidden="true" virtual="true">
+	<Frame name="T_GNOMTECWIDGETEDITBOX_MULTILINE" hidden="true" virtual="true" inherits="BackdropTemplate">
 		<Size x="128" y="128" />
 		<ResizeBounds>
 			<minResize>
@@ -66,17 +66,9 @@
 				<RelDimension x="1.0" y="1.0"/>
 			</maxResize>
 		</ResizeBounds>
-		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="12"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="0" right="0" top="5" bottom="5"/>
-			</BackgroundInsets>
-		</Backdrop>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="GNOMTEC_BACKDROP_WIDGET_EDITBOX_MULTILINE" type="global"/>
+		</KeyValues>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="Background">
@@ -159,7 +151,7 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Frame name="$parentBorder">
+					<Frame name="$parentBorder" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x="24" y="0"/>
 						</Size>
@@ -171,17 +163,9 @@
 								<Offset x="5" y="-3"/>
 							</Anchor>
 						</Anchors>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="12"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="0" right="0" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="GNOMTEC_BACKDROP_WIDGET_EDITBOX_MULTILINE" type="global"/>
+						</KeyValues>
 					</Frame>
 				</Frames>
 				<ThumbTexture name="$parentThumbTexture" inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob">

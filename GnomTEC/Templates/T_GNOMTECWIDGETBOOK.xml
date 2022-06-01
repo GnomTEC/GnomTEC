@@ -2,7 +2,10 @@
 
 	<!-- T_GNOMTECWIDGETBOOK: Standard template for GnomTECWidgetBook -->
 	<Frame name="T_GNOMTECWIDGETBOOK" virtual="true">
-		<Backdrop bgFile="Interface/AddOns/GnomTEC/GnomTEC/Textures/book_background"/>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="GNOMTEC_BACKDROP_WIDGET_BOOK" type="global"/>
+			<KeyValue key="backdropColor" value="TOOLTIP_DEFAULT_BACKGROUND_COLOR" type="global"/>
+		</KeyValues>
 		<Layers>
 			<Layer level="OVERLAY">
 			</Layer>

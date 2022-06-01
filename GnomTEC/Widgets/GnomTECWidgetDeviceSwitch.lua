@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetDeviceSwitch
--- Version: 9.0.2.18
+-- Version: 9.2.0.19
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2021 by Peter Jack
+-- Copyright © 2014-2022 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetDeviceSwitch-1.0", 18
+local MAJOR, MINOR = "GnomTECWidgetDeviceSwitch-1.0", 19
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -83,7 +83,7 @@ function GnomTECWidgetDeviceSwitch(init)
 	-- private methods
 	-- local function f()
 	local function OnClick(frame, button)
-		PlaySoundFile([[Sound\Item\Weapons\Gun\GunLoad01.ogg]])
+		PlaySound(113561) -- FX_GunFoley_LoadGun
 		self.SafeCall(self.OnClick, self, button)
 	end
 

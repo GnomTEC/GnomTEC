@@ -1,5 +1,5 @@
-## Interface: 90200
-# retail: 90200 classic: 11303
+## Interface: 90205
+# retail: 90205 classic: 11303
 ## Title: GnomTEC
 ## Notes: GnomTEC Addon Framework.
 ## Notes-deDE: GnomTEC Addon Framework.
@@ -13,7 +13,7 @@
 ## Notes-zhCN: GnomTEC Addon Framework.
 ## Notes-zhTW: GnomTEC Addon Framework.
 ## Author: Peter Jack
-## Version: 9.2.0.18
+## Version: 9.2.5.18
 ## SavedVariables: GnomTEC_DB
 
 GnomTEC\GnomTEC.xml

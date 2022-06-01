@@ -34,6 +34,7 @@
 	<Include file="Classes\GnomTECClassChat.lua"/>
 
 	<!-- GnomTEC Framework Base Widget Templates -->
+	<Include file="Templates\Backdrop.lua"/>
 	<Include file="Templates\T_GNOMTECWIDGET.xml"/>
 	<Include file="Templates\T_GNOMTECWIDGETCONTAINER.xml"/> 
 
