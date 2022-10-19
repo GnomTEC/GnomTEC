@@ -31,9 +31,9 @@
 	- For more information, see documentation on the Mary Sue Protocol - http://moonshyne.org/msp/
 ]]
 
-local VERSION = 23
+local VERSION = 30
 local PROTOCOL_VERSION = 3
-local CHOMP_VERSION = 14
+local CHOMP_VERSION = 20
 
 if IsLoggedIn() then
 	error(("LibMSP (embedded in: %s) cannot be loaded after login."):format((...)))
@@ -56,9 +56,8 @@ local TT_LIST = { "VP", "VA", "NA", "NH", "NI", "NT", "RA", "CU", "FR", "FC" }
 local TT_ALL = {
 	VP = true, VA = true, NA = true, NH = true,	NI = true, NT = true,
 	RA = true, CU = true, FR = true, FC = true,	RC = true, CO = true,
-	IC = true, PX = true,
+	IC = true, PX = true, PN = true,
 }
-local UNIT_FIELD = { GC = true, GF = true, GR = true, GS = true, GU = true, }
 local INTERNAL_FIELDS = {
 	VP = true, GC = true, GF = true, GR = true, GS = true, GU = true,
 }
@@ -245,19 +244,34 @@ local CRC32C = {
 }
 
 local function crc32c_hash(s)
-	local XOR, AND, RSHIFT, byte = bit.bxor, bit.band, bit.rshift, string.byte
+	local bxor, band, brshift, strbyte = bit.bxor, bit.band, bit.rshift, string.byte
+
 	local crc = 0xffffffff
-	for i = 1, #s do
-		local b = byte(s, i)
-		crc = XOR(RSHIFT(crc, 8), CRC32C[AND(XOR(crc, b), 0xFF) + 1])
+	local len = #s
+
+	for i = 1, len - 7, 8 do
+		local b1, b2, b3, b4, b5, b6, b7, b8 = strbyte(s, i, i + 7)
+
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b1), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b2), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b3), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b4), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b5), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b6), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b7), 0xFF) + 1])
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b8), 0xFF) + 1])
 	end
-	return XOR(crc, 0xffffffff)
+
+	for i = (len - (len % 8)) + 1, len do
+		local b = strbyte(s, i)
+		crc = bxor(brshift(crc, 8), CRC32C[band(bxor(crc, b), 0xFF) + 1])
+	end
+
+	return bxor(crc, 0xffffffff)
 end
 
 local function tohex(n)
-	local high = bit.rshift(n, 16)
-	local low = n % 0x10000
-	return ("%04X%04X"):format(high, low):match("^0*(%x-)$")
+	return string.format("%.X", bit.arshift(n, 0))
 end
 
 local function crc32c_tostring(s)
@@ -274,6 +288,10 @@ local CRC32CCache = setmetatable({}, {
 		return crc
 	end,
 })
+
+function msp:CRC32(s)
+	return tonumber(CRC32CCache[s], 16)
+end
 
 -- Benchmarking function.
 function msp:DebugHashTest(text, silent)
@@ -318,7 +336,36 @@ local mspCharMeta = {
 		if not rawget(self, name) then
 			rawset(self, name, setmetatable({}, charMeta))
 			RunCallback("dataload", name, self[name])
+
+			local fields = rawget(self, name).field
+			local ver = rawget(self, name).ver
+
+			for field, value in pairs(fields) do
+				if not ver[field] and not msp.ttAll[field] then
+					ver[field] = ver[field] or tonumber(CRC32CCache[value], 16)
+				end
+			end
+
+			-- Calculate TT version separately from the assigned data.
+
+			if not ver.TT then
+				local tt = {}
+
+				for _, field in ipairs(msp.ttList) do
+					local contents = fields[field]
+
+					if contents == "" then
+						tt[#tt + 1] = field
+					else
+						tt[#tt + 1] = string.format("%s:%s", field, contents)
+					end
+				end
+
+				local ttContents = table.concat(tt, SEPARATOR)
+				ver.TT = tonumber(CRC32CCache[ttContents], 16)
+			end
 		end
+
 		return rawget(self, name)
 	end,
 	__newindex = function(self, name, value)
@@ -359,7 +406,9 @@ local function AddTTField(field)
 	if type(field) ~= "string" or not field:find("^%u%u$") then
 		error("msp:AddFieldsToTooltip(): All fields must be strings matching Lua pattern \"%u%u\".", 3)
 	end
-	msp.ttList[#msp.ttList + 1] = field
+	if not tContains(msp.ttList, field) then
+		msp.ttList[#msp.ttList + 1] = field
+	end
 	if not msp.ttAll[field] then
 		msp.ttAll[field] = true
 	end
@@ -451,9 +500,7 @@ function Process(name, command, isSafe)
 	elseif action == "" and isSafe then
 		msp.char[name].field[field] = contents
 		msp.char[name].ver[field] = crcNum
-		-- Assume unit fields won't change during a session, so only request
-		-- them once after getting a response.
-		msp.char[name].time[field] = not UNIT_FIELD[field] and now or TIME_MAX
+		msp.char[name].time[field] = now
 		if field == "TT" then
 			for ttField in pairs(msp.ttAll) do
 				-- Clear fields that haven't been updated in PROBE_FREQUENCY,
@@ -572,13 +619,24 @@ local function EventFrame_Handler(self, event, ...)
 		AddOn_Chomp.RegisterAddonPrefix(PREFIX, Chomp_Callback, CHOMP_PREFIX_SETTINGS)
 		AddOn_Chomp.RegisterErrorCallback(Chomp_Error)
 		local GU = UnitGUID("player")
-		local _, GC, _, GR, GS, _, _ = GetPlayerInfoByGUID(GU)
+		local GC = select(2, UnitClass("player"))
+		local GR = select(2, UnitRace("player"))
+		local GS = UnitSex("player")
 		local GF = UnitFactionGroup("player")
 		msp.my.GU = tostring(GU)
 		msp.my.GC = tostring(GC)
 		msp.my.GR = tostring(GR)
 		msp.my.GS = tostring(GS)
 		msp.my.GF = tostring(GF)
+
+		if IsTrialAccount() then
+			msp.my.TR = "1"
+		elseif IsVeteranTrialAccount() then
+			msp.my.TR = "2"
+		else
+			msp.my.TR = "0"
+		end
+
 		if GF == "Neutral" then
 			self:RegisterEvent("NEUTRAL_FACTION_SELECT_RESULT")
 		end

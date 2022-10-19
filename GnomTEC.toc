@@ -13,7 +13,7 @@
 ## Notes-zhCN: GnomTEC Addon Framework.
 ## Notes-zhTW: GnomTEC Addon Framework.
 ## Author: Peter Jack
-## Version: 9.2.7.18
+## Version: 9.2.7.19
 ## SavedVariables: GnomTEC_DB
 
 GnomTEC\GnomTEC.xml

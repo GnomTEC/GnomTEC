@@ -14,32 +14,40 @@
 	CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ]]
 
-local VERSION = 14
+local VERSION = 20
 
 if IsLoggedIn() then
 	error(("Chomp Message Library (embedded: %s) cannot be loaded after login."):format((...)))
-elseif __chomp_internal and (__chomp_internal.VERSION or 0) >= VERSION then
 	return
 end
 
-if not __chomp_internal then
-	__chomp_internal = CreateFrame("Frame")
+local Chomp = LibStub:NewLibrary("Chomp", VERSION)
+
+if not Chomp then
+	return
 end
 
-if not AddOn_Chomp then
-	AddOn_Chomp = {}
-end
+Chomp.Internal = Chomp.Internal or __chomp_internal or CreateFrame("Frame")
+Chomp.Internal.LOADING = true
 
-__chomp_internal.LOADING = true
+local Internal = Chomp.Internal
 
-local Internal = __chomp_internal
+Internal.callbacks = LibStub:GetLibrary("CallbackHandler-1.0"):New(Internal)
 
 --[[
 	CONSTANTS
 ]]
 
 -- Safe instantaneous burst bytes and safe susatined bytes per second.
-local BURST, BPS = 8192, 2048
+-- Lower rates on non-Retail clients due to aggressive throttling.
+local BURST, BPS
+
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	BURST, BPS = 8192, 2048
+else
+	BURST, BPS = 4000, 800
+end
+
 -- These values were safe on 8.0 beta, but are unsafe on 7.3 live. Normally I'd
 -- love to automatically use them if 8.0 is live, but it's not 100% clear if
 -- this is a 8.0 thing or a test realm thing.
@@ -62,17 +70,28 @@ if not Internal.Prefixes then
 	Internal.Prefixes = {}
 end
 
-if not Internal.ErrorCallbacks then
-	Internal.ErrorCallbacks = {}
+if Internal.ErrorCallbacks then
+	-- v18+: Use CallbackHandler internally; relocate any registered error
+	--       callbacks to the registry.
+
+	for _, callback in ipairs(Internal.ErrorCallbacks) do
+		local event = "OnError"
+		local func  = function(_, ...) return callback(...) end
+		local owner = tostring(callback)
+
+		Internal.RegisterCallback(owner, event, func)
+	end
+
+	Internal.ErrorCallbacks = nil
 end
 
 Internal.BITS = {
 	SERIALIZE = 0x001,
-	UNUSEDA   = 0x002,
+	CODECV2   = 0x002,  -- Indicates the message should be processed with codec version 2. Relies upon VERSION16.
 	UNUSED9   = 0x004,
-	UNUSES8   = 0x008,
+	VERSION16 = 0x008,  -- Indicates v16+ of Chomp is in use from the sender.
 	BROADCAST = 0x010,
-	UNUSED6   = 0x020,
+	NOTUSED6  = 0x020,  -- This is unused but won't report as such on receipt; use sparingly!
 	UNUSED5   = 0x040,
 	UNUSED4   = 0x080,
 	UNUSED3   = 0x100,
@@ -109,27 +128,36 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 		return
 	end
 
-	local method = channel:match("%:(%u+)$")
-	if method == "BATTLENET" or method == "LOGGED" then
-		text = Internal.DecodeQuotedPrintable(text, method == "LOGGED")
-	end
-
 	local bitField, sessionID, msgID, msgTotal, userText = text:match("^(%x%x%x)(%x%x%x)(%x%x%x)(%x%x%x)(.*)$")
 	bitField = bitField and tonumber(bitField, 16) or 0
 	sessionID = sessionID and tonumber(sessionID, 16) or -1
 	msgID = msgID and tonumber(msgID, 16) or 1
 	msgTotal = msgTotal and tonumber(msgTotal, 16) or 1
+
 	if userText then
 		text = userText
+	end
+
+	local codecVersion = Internal:GetCodecVersionFromBitfield(bitField)
+	local method = channel:match("%:(%u+)$")
+	if method == "BATTLENET" or method == "LOGGED" then
+		text = Internal.DecodeQuotedPrintable(text, method == "LOGGED", codecVersion)
 	end
 
 	if bit.bor(bitField, Internal.KNOWN_BITS) ~= Internal.KNOWN_BITS or bit.band(bitField, Internal.BITS.DEPRECATE) == Internal.BITS.DEPRECATE then
 		-- Uh, found an unknown bit, or a bit we're explicitly not to parse.
 		if not oneTimeError then
 			oneTimeError = true
-			error("AddOn_Chomp: Recieved an addon message that cannot be parsed, check your addons for updates. (This message will only display once per session, but there may be more unusable addon messages.)")
+			error("Chomp: Received an addon message that cannot be parsed, check your addons for updates. (This message will only display once per session, but there may be more unusable addon messages.)")
 		end
 		return
+	end
+
+	local hasVersion16 = bit.band(bitField, Internal.BITS.VERSION16) ~= 0
+	if not hasVersion16 then
+		-- Sender is using a version of Chomp that's far too old. Ignore
+		-- as we probably can't communicate with them anyway.
+		return;
 	end
 
 	if not prefixData[sender] then
@@ -145,7 +173,7 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 		end
 		if msgID == 1 then
 			local broadcastTarget, broadcastText = text:match("^([^\058\127]*)[\058\127](.*)$")
-			local ourName = AddOn_Chomp.NameMergedRealm(UnitFullName("player"))
+			local ourName = Chomp.NameMergedRealm(UnitFullName("player"))
 			if sender == ourName or broadcastTarget ~= "" and broadcastTarget ~= ourName then
 				-- Not for us, quit processing.
 				return
@@ -196,7 +224,7 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 			if fullMsgOnly then
 				handlerData = table.concat(buffer)
 				if deserialize then
-					local success, original = pcall(AddOn_Chomp.Deserialize, handlerData)
+					local success, original = pcall(Chomp.Deserialize, handlerData)
 					if success then
 						handlerData = original
 					else
@@ -206,6 +234,7 @@ local function HandleMessageIn(prefix, text, channel, sender, target, zoneChanne
 			end
 			if prefixData.validTypes[type(handlerData)] then
 				xpcall(prefixData.callback, CallErrorHandler, prefix, handlerData, channel, sender, target, zoneChannelID, localID, name, instanceID, nil, nil, nil, sessionID, msgID, msgTotal, bitField)
+				Internal:TriggerEvent("OnMessageReceived", prefix, handlerData, channel, sender, target, zoneChannelID, localID, name, instanceID, nil, nil, nil, sessionID, msgID, msgTotal, bitField)
 			end
 			buffer[i] = false
 			if i == msgTotal then
@@ -219,30 +248,30 @@ end
 
 local function ParseInGameMessage(prefix, text, kind, sender, target, zoneChannelID, localID, name, instanceID)
 	if kind == "WHISPER" then
-		target = AddOn_Chomp.NameMergedRealm(target)
+		target = Chomp.NameMergedRealm(target)
 	end
-	return prefix, text, kind, AddOn_Chomp.NameMergedRealm(sender), target, zoneChannelID, localID, name, instanceID
+	return prefix, text, kind, Chomp.NameMergedRealm(sender), target, zoneChannelID, localID, name, instanceID
 end
 
 local function ParseInGameMessageLogged(prefix, text, kind, sender, target, zoneChannelID, localID, name, instanceID)
 	if kind == "WHISPER" then
-		target = AddOn_Chomp.NameMergedRealm(target)
+		target = Chomp.NameMergedRealm(target)
 	end
-	return prefix, text, ("%s:LOGGED"):format(kind), AddOn_Chomp.NameMergedRealm(sender), target, zoneChannelID, localID, name, instanceID
+	return prefix, text, ("%s:LOGGED"):format(kind), Chomp.NameMergedRealm(sender), target, zoneChannelID, localID, name, instanceID
 end
 
 local function ParseBattleNetMessage(prefix, text, kind, bnetIDGameAccount)
-	local accountInfo   = Internal:GetBNGameAccountInfo(bnetIDGameAccount)
-	local characterName = accountInfo.characterName
-	local realmName     = accountInfo.realmName
+	local name = Internal:GetBattleNetAccountName(bnetIDGameAccount)
 
-	-- Build 27144: This can now be nil after removing someone from BattleTag.
-	-- Build 28807: This can be an empty string when someone is sending a message when they're offline.
-	if not characterName or characterName == "" then
+	if not name then
 		return
 	end
-	local name = AddOn_Chomp.NameMergedRealm(characterName, realmName)
-	return prefix, text, ("%s:BATTLENET"):format(kind), name, AddOn_Chomp.NameMergedRealm(UnitName("player")), 0, 0, "", 0
+
+	return prefix, text, ("%s:BATTLENET"):format(kind), name, Chomp.NameMergedRealm(UnitName("player")), 0, 0, "", 0
+end
+
+function Internal:GetCodecVersionFromBitfield(bitField)
+	return (bit.band(bitField, Internal.BITS.CODECV2) ~= 0) and 2 or 1
 end
 
 --[[
@@ -255,7 +284,7 @@ function Internal:RunQueue()
 	end
 	local active = {}
 	for i, priority in ipairs(PRIORITIES) do
-		if self[priority][1] then -- Priority has queues.
+		if self[priority].front then -- Priority has queues.
 			active[#active + 1] = self[priority]
 		end
 	end
@@ -264,11 +293,11 @@ function Internal:RunQueue()
 	self.bytes = 0
 	for i, priority in ipairs(active) do
 		priority.bytes = priority.bytes + bytes
-		while priority[1] and priority.bytes >= priority[1][1].length do
-			local queue = priority:Remove(1)
-			local message = queue:Remove(1)
-			if queue[1] then -- More messages in this queue.
-				priority[#priority + 1] = queue
+		while priority.front and priority.bytes >= priority.front.front.length do
+			local queue = priority:PopFront()
+			local message = queue:PopFront()
+			if queue.front then -- More messages in this queue.
+				priority:PushBack(queue)
 			else -- No more messages in this queue.
 				priority.byName[queue.name] = nil
 			end
@@ -283,7 +312,7 @@ function Internal:RunQueue()
 				xpcall(message.callback, CallErrorHandler, message.callbackArg, didSend)
 			end
 		end
-		if not priority[1] then
+		if not priority.front then
 			remaining = remaining - 1
 			self.bytes = self.bytes + priority.bytes
 			priority.bytes = 0
@@ -315,14 +344,11 @@ function Internal:Enqueue(priorityName, queueName, message)
 	local priority = self[priorityName]
 	local queue = priority.byName[queueName]
 	if not queue then
-		queue = {
-			name = queueName,
-			Remove = table.remove,
-		}
+		queue = Mixin({ name = queueName }, DoublyLinkedListMixin)
 		priority.byName[queueName] = queue
-		priority[#priority + 1] = queue
+		priority:PushBack(queue)
 	end
-	queue[#queue + 1] = message
+	queue:PushBack(message)
 	self:StartQueue()
 end
 
@@ -332,7 +358,7 @@ Internal.BPS = BPS
 Internal.BURST = BURST
 
 for i, priority in ipairs(PRIORITIES) do
-	Internal[priority] = { bytes = 0, byName = {}, Remove = table.remove, }
+	Internal[priority] = Mixin({ bytes = 0, byName = {} }, DoublyLinkedListMixin)
 end
 
 function Internal:StartQueue()
@@ -353,6 +379,10 @@ function Internal.OnTick()
 	end
 end
 
+function Internal:TriggerEvent(event, ...)
+	return self.callbacks:Fire(event, ...)
+end
+
 --[[
 	FUNCTION HOOKS
 ]]
@@ -360,7 +390,9 @@ end
 -- Hooks don't trigger if the hooked function errors, so there's no need to
 -- check parameters, if those parameters cause errors (which most don't now).
 
-local function MessageEventFilter_SYSTEM (self, event, text)
+local lastFilteredLineID = nil
+
+local function MessageEventFilter_SYSTEM (self, event, text, ...)
 	local name = text:match(ERR_CHAT_PLAYER_NOT_FOUND_S:format("(.+)"))
 	if not name then
 		return false
@@ -368,9 +400,14 @@ local function MessageEventFilter_SYSTEM (self, event, text)
 		Internal.Filter[name] = nil
 		return false
 	end
-	for i, func in ipairs(Internal.ErrorCallbacks) do
-		xpcall(func, CallErrorHandler, name)
+
+	local lineID = select(10, ...)
+
+	if lineID ~= lastFilteredLineID then
+		Internal:TriggerEvent("OnError", name)
+		lastFilteredLineID = lineID
 	end
+
 	return true
 end
 
@@ -428,14 +465,7 @@ end
 	BATTLE.NET WRAPPER API
 ]]
 
-local bnCacheMetatable = setmetatable({}, { __mode = "v" })
-local bnGameAccounts = setmetatable({}, bnCacheMetatable)
-local bnFriendGameAccounts = {}
-
-local function PackBNGameAccountInfo(arg1, arg2, arg3, arg4, arg5, arg6,
-	                                 arg7, arg8, arg9, arg10, arg11, arg12,
-	                                 arg13, arg14, arg15, arg16, arg17, arg18,
-	                                 arg19, arg20, arg21, arg22)
+local function PackGameAccountInfo(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22)
 	return {
 		hasFocus       = arg1 ~= 0 and arg or nil,
 		characterName  = arg2 ~= "" and arg or nil,
@@ -458,36 +488,7 @@ local function PackBNGameAccountInfo(arg1, arg2, arg3, arg4, arg5, arg6,
 	}
 end
 
-local function PurgeBNGameAccounts()
-	wipe(bnGameAccounts)
-end
-
-local function PurgeBNFriendGameAccounts()
-	-- The odds of the number of friends changing is quite low, so we don't
-	-- purge the outer table but instead eliminate the per-friend accounts.
-
-	for _, accounts in pairs(bnFriendGameAccounts) do
-		wipe(accounts)
-	end
-end
-
-local function QueryBNGameAccount(accountID)
-	if C_BattleNet then
-		return C_BattleNet.GetGameAccountInfoByID(accountID)
-	else
-		return PackBNGameAccountInfo(BNGetGameAccountInfo(accountID))
-	end
-end
-
-local function QueryBNFriendGameAccount(friendIndex, accountIndex)
-	if C_BattleNet then
-		return C_BattleNet.GetFriendGameAccountInfo(friendIndex, accountIndex)
-	else
-		return PackBNGameAccountInfo(BNGetFriendGameAccountInfo(friendIndex, accountIndex))
-	end
-end
-
-function Internal:GetBNFriendNumGameAccounts(friendIndex)
+local function GetFriendNumGameAccounts(friendIndex)
 	if C_BattleNet then
 		return C_BattleNet.GetFriendNumGameAccounts(friendIndex)
 	else
@@ -495,20 +496,115 @@ function Internal:GetBNFriendNumGameAccounts(friendIndex)
 	end
 end
 
-function Internal:GetBNGameAccountInfo(accountID)
-	local accountInfo = bnGameAccounts[accountID] or QueryBNGameAccount(accountID)
-	bnGameAccounts[accountID] = accountInfo
-	return accountInfo
+local function GetFriendGameAccountInfo(friendIndex, accountIndex)
+	if C_BattleNet then
+		return C_BattleNet.GetFriendGameAccountInfo(friendIndex, accountIndex)
+	else
+		return PackGameAccountInfo(BNGetFriendGameAccountInfo(friendIndex, accountIndex))
+	end
 end
 
-function Internal:GetBNFriendGameAccountInfo(friendIndex, accountIndex)
-	local accounts = bnFriendGameAccounts[friendIndex] or setmetatable({}, bnCacheMetatable)
-	local accountInfo = accounts[accountIndex] or QueryBNFriendGameAccount(friendIndex, accountIndex)
+local function EnumerateFriendGameAccounts()
+	local friendIndex  = 0
+	local friendCount  = BNGetNumFriends()
+	local accountIndex = 0
+	local accountCount = 0
 
-	accounts[accountIndex] = accountInfo
-	bnFriendGameAccounts[friendIndex] = accounts
+	local function NextGameAccount()
+		repeat
+			accountIndex = accountIndex + 1
 
-	return accountInfo
+			if accountIndex > accountCount then
+				friendIndex  = friendIndex + 1
+				accountIndex = 1
+				accountCount = GetFriendNumGameAccounts(friendIndex)
+			end
+		until accountIndex <= accountCount or friendIndex > friendCount
+
+		if friendIndex <= friendCount and accountIndex <= accountCount then
+			return friendIndex, accountIndex, GetFriendGameAccountInfo(friendIndex, accountIndex)
+		end
+	end
+
+	return NextGameAccount
+end
+
+local function NormalizeRealmName(realmName)
+	return (string.gsub(realmName, "[%s-]", ""))
+end
+
+local function CanExchangeWithGameAccount(account)
+	if not account.isOnline then
+		return false  -- Friend isn't even online.
+	elseif account.clientProgram ~= BNET_CLIENT_WOW then
+		return false  -- Friend isn't playing WoW. Imagine.
+	end
+
+	local characterName = account.characterName
+	local realmName     = account.realmName and NormalizeRealmName(account.realmName) or nil
+	local factionName   = account.factionName
+
+	if not characterName or characterName == "" or characterName == UNKNOWNOBJECT then
+		return false  -- Character name is invalid.
+	elseif not realmName or realmName == "" then
+		return false  -- Realm name is invalid.
+	elseif Internal.SameRealm[realmName] and factionName == UnitFactionGroup("player") then
+		return false  -- This character is on the same faction and realm.
+	else
+		return true
+	end
+end
+
+function Internal:UpdateBattleNetAccountData()
+	self.bnetGameAccounts = {}
+
+	if not BNFeaturesEnabledAndConnected() then
+		return  -- Player isn't connected to Battle.net.
+	elseif not IsLoggedIn() then
+		return  -- Player hasn't yet logged in.
+	end
+
+	for _, _, account in EnumerateFriendGameAccounts() do
+		if CanExchangeWithGameAccount(account) then
+			local characterName = account.characterName
+			local realmName = string.gsub(account.realmName, "[%s*%-*]", "")
+			local mergedName = Chomp.NameMergedRealm(characterName, realmName)
+
+			self.bnetGameAccounts[mergedName] = account.gameAccountID
+		end
+	end
+end
+
+function Internal:GetBattleNetAccountName(senderAccountID)
+	if not BNFeaturesEnabledAndConnected() then
+		return nil  -- Player isn't connected to Battle.net.
+	elseif not self.bnetGameAccounts then
+		return nil  -- We have no game accounts to search.
+	end
+
+	for playerName, gameAccountID in pairs(self.bnetGameAccounts) do
+		if gameAccountID == senderAccountID then
+			return playerName
+		end
+	end
+
+	return nil
+end
+
+function Internal:GetBattleNetAccountID(targetName)
+	if not BNFeaturesEnabledAndConnected() then
+		return nil  -- Player isn't connected to Battle.net.
+	elseif not self.bnetGameAccounts then
+		return nil  -- We have no game accounts to search.
+	end
+
+	for playerName, gameAccountID in pairs(self.bnetGameAccounts) do
+		if strcmputf8i(playerName, targetName) == 0 then
+			return gameAccountID
+		end
+	end
+
+	return nil
 end
 
 --[[
@@ -543,10 +639,7 @@ Internal:SetScript("OnEvent", function(self, event, ...)
 		or event == "BN_FRIEND_ACCOUNT_ONLINE"
 		or event == "BN_FRIEND_INFO_CHANGED"
 		or event == "FRIENDLIST_UPDATE" then
-		-- Overeager purging of the cache is to be 100% sure we aren't
-		-- missing events; the BN events are sparsely documented.
-		PurgeBNGameAccounts()
-		PurgeBNFriendGameAccounts()
+		Internal:UpdateBattleNetAccountData()
 	elseif event == "PLAYER_LOGIN" then
 		_G.__chomp_internal = nil
 		hooksecurefunc(C_ChatInfo, "SendAddonMessage", HookSendAddonMessage)
@@ -571,19 +664,11 @@ Internal:SetScript("OnEvent", function(self, event, ...)
 		end
 		if self.OutgoingQueue then
 			for i, q in ipairs(self.OutgoingQueue) do
-				AddOn_Chomp[q.f](unpack(q, 1, q.n))
+				Chomp[q.f](unpack(q, 1, q.n))
 			end
 			self.OutgoingQueue = nil
 		end
-		if self.ChompAPI then
-			if IsAddOnLoaded("Blizzard_APIDocumentation") then
-				APIDocumentation:AddDocumentationTable(self.ChompAPI)
-			else
-				self:RegisterEvent("ADDON_LOADED")
-			end
-		end
-	elseif event == "ADDON_LOADED" and ... == "Blizzard_APIDocumentation" then
-		APIDocumentation:AddDocumentationTable(self.ChompAPI)
+		Internal:UpdateBattleNetAccountData()
 	elseif event == "PLAYER_LEAVING_WORLD" then
 		self.unloadTime = GetTime()
 	elseif event == "PLAYER_ENTERING_WORLD" and self.unloadTime then
@@ -596,7 +681,19 @@ Internal:SetScript("OnEvent", function(self, event, ...)
 			end
 		end
 		self.unloadTime = nil
+		Internal:UpdateBattleNetAccountData()
 	end
 end)
 
 Internal.VERSION = VERSION
+
+-- v18+: The future is now old man. These need to exist for compatibility, and
+--       to prevent issues where pre-v18 versions would replace newer ones if
+--       __chomp_internal were to just disappear.
+--
+--       Note that we still clear __chomp_internal once PLAYER_LOGIN has
+--       fired, but we don't remove  access to it from the library table
+--       because being able to inspect it at runtime is nice.
+
+_G.__chomp_internal = Internal
+_G.AddOn_Chomp = Chomp

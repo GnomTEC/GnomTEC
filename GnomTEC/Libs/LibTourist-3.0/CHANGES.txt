@@ -1,12 +1,14 @@
 ------------------------------------------------------------------------
-r251 | Odica_Jaedenar | 2020-11-19 21:02:09 +0000 (Thu, 19 Nov 2020) | 4 lines
+r274 | Odica_Jaedenar | 2022-08-21 19:47:35 +0000 (Sun, 21 Aug 2022) | 1 line
 Changed paths:
    M /trunk/LibTourist-3.0.lua
+
+Oribos is now a sanctuary
+------------------------------------------------------------------------
+r273 | Odica_Jaedenar | 2022-08-21 19:38:24 +0000 (Sun, 21 Aug 2022) | 1 line
+Changed paths:
    M /trunk/LibTourist-3.0.toc
 
-- Updated TOC version to 90002
-- Exile's Reach and Darkmaul Citadel are now Friendly for both Horde and Alliance, instead of contested
-- Corrected group size for Darkmaul Citadel
-- Removed road connection between Tiragarde Sound and Tol Dagor
+Updated version in TOC to 90207
 ------------------------------------------------------------------------
 

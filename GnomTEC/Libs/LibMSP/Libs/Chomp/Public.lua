@@ -15,11 +15,12 @@
 	CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ]]
 
-if not __chomp_internal or not __chomp_internal.LOADING then
+local Chomp = LibStub:GetLibrary("Chomp", true)
+local Internal = Chomp and Chomp.Internal or nil
+
+if not Chomp or not Internal or not Internal.LOADING then
 	return
 end
-
-local Internal = __chomp_internal
 
 local DEFAULT_PRIORITY = "MEDIUM"
 local PRIORITIES_HASH = { HIGH = true, MEDIUM = true, LOW = true }
@@ -37,28 +38,28 @@ local function QueueMessageOut(func, ...)
 	q[#q + 1] = t
 end
 
-function AddOn_Chomp.SendAddonMessage(prefix, text, kind, target, priority, queue, callback, callbackArg)
+function Chomp.SendAddonMessage(prefix, text, kind, target, priority, queue, callback, callbackArg)
 	if type(prefix) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessage(): prefix: expected string, got " .. type(prefix), 2)
+		error("Chomp.SendAddonMessage: prefix: expected string, got " .. type(prefix), 2)
 	elseif type(text) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessage(): text: expected string, got " .. type(text), 2)
+		error("Chomp.SendAddonMessage: text: expected string, got " .. type(text), 2)
 	elseif kind == "WHISPER" and type(target) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessage(): target: expected string, got " .. type(target), 2)
+		error("Chomp.SendAddonMessage: target: expected string, got " .. type(target), 2)
 	elseif kind == "CHANNEL" and type(target) ~= "number" then
-		error("AddOn_Chomp.SendAddonMessage(): target: expected number, got " .. type(target), 2)
+		error("Chomp.SendAddonMessage: target: expected number, got " .. type(target), 2)
 	elseif priority and not PRIORITIES_HASH[priority] then
-		error("AddOn_Chomp.SendAddonMessage(): priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
+		error("Chomp.SendAddonMessage: priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
 	elseif queue and type(queue) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessage(): queue: expected string or nil, got " .. type(queue), 2)
+		error("Chomp.SendAddonMessage: queue: expected string or nil, got " .. type(queue), 2)
 	elseif callback and type(callback) ~= "function" then
-		error("AddOn_Chomp.SendAddonMessage(): callback: expected function or nil, got " .. type(callback), 2)
+		error("Chomp.SendAddonMessage: callback: expected function or nil, got " .. type(callback), 2)
 	end
 
 	local length = #text
 	if length > 255 then
-		error("AddOn_Chomp.SendAddonMessage(): text length cannot exceed 255 bytes", 2)
+		error("Chomp.SendAddonMessage: text length cannot exceed 255 bytes", 2)
 	elseif #prefix > 16 then
-		error("AddOn_Chomp.SendAddonMessage(): prefix: length cannot exceed 16 bytes", 2)
+		error("Chomp.SendAddonMessage: prefix: length cannot exceed 16 bytes", 2)
 	end
 	if not Internal.isReady then
 		QueueMessageOut("SendAddonMessage", prefix, text, kind, target, priority, queue, callback, callbackArg)
@@ -111,28 +112,28 @@ function AddOn_Chomp.SendAddonMessage(prefix, text, kind, target, priority, queu
 	return Internal:Enqueue(priority or DEFAULT_PRIORITY, queue or ("%s%s%s"):format(prefix, kind, (tostring(target) or "")), message)
 end
 
-function AddOn_Chomp.SendAddonMessageLogged(prefix, text, kind, target, priority, queue, callback, callbackArg)
+function Chomp.SendAddonMessageLogged(prefix, text, kind, target, priority, queue, callback, callbackArg)
 	if type(prefix) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): prefix: expected string, got " .. type(prefix), 2)
+		error("Chomp.SendAddonMessageLogged: prefix: expected string, got " .. type(prefix), 2)
 	elseif type(text) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): text: expected string, got " .. type(text), 2)
+		error("Chomp.SendAddonMessageLogged: text: expected string, got " .. type(text), 2)
 	elseif kind == "WHISPER" and type(target) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): target: expected string, got " .. type(target), 2)
+		error("Chomp.SendAddonMessageLogged: target: expected string, got " .. type(target), 2)
 	elseif kind == "CHANNEL" and type(target) ~= "number" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): target: expected number, got " .. type(target), 2)
+		error("Chomp.SendAddonMessageLogged: target: expected number, got " .. type(target), 2)
 	elseif priority and not PRIORITIES_HASH[priority] then
-		error("AddOn_Chomp.SendAddonMessageLogged(): priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
+		error("Chomp.SendAddonMessageLogged: priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
 	elseif queue and type(queue) ~= "string" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): queue: expected string or nil, got " .. type(queue), 2)
+		error("Chomp.SendAddonMessageLogged: queue: expected string or nil, got " .. type(queue), 2)
 	elseif callback and type(callback) ~= "function" then
-		error("AddOn_Chomp.SendAddonMessageLogged(): callback: expected function or nil, got " .. type(callback), 2)
+		error("Chomp.SendAddonMessageLogged: callback: expected function or nil, got " .. type(callback), 2)
 	end
 
 	local length = #text
 	if length > 255 then
-		error("AddOn_Chomp.SendAddonMessageLogged(): text length cannot exceed 255 bytes", 2)
+		error("Chomp.SendAddonMessageLogged: text length cannot exceed 255 bytes", 2)
 	elseif #prefix > 16 then
-		error("AddOn_Chomp.SendAddonMessageLogged(): prefix: length cannot exceed 16 bytes", 2)
+		error("Chomp.SendAddonMessageLogged: prefix: length cannot exceed 16 bytes", 2)
 	end
 	if not Internal.isReady then
 		QueueMessageOut("SendAddonMessageLogged", prefix, text, kind, target, priority, queue, callback, callbackArg)
@@ -185,26 +186,26 @@ function AddOn_Chomp.SendAddonMessageLogged(prefix, text, kind, target, priority
 	return Internal:Enqueue(priority or DEFAULT_PRIORITY, queue or ("%s%s%s"):format(prefix, kind, (tostring(target) or "")), message)
 end
 
-function AddOn_Chomp.SendChatMessage(text, kind, language, target, priority, queue, callback, callbackArg)
+function Chomp.SendChatMessage(text, kind, language, target, priority, queue, callback, callbackArg)
 	if type(text) ~= "string" then
-		error("AddOn_Chomp.SendChatMessage(): text: expected string, got " .. type(text), 2)
+		error("Chomp.SendChatMessage: text: expected string, got " .. type(text), 2)
 	elseif language and type(language) ~= "string" and type(language) ~= "number" then
-		error("AddOn_Chomp.SendChatMessage(): language: expected string or number, got " .. type(language), 2)
+		error("Chomp.SendChatMessage: language: expected string or number, got " .. type(language), 2)
 	elseif kind == "WHISPER" and type(target) ~= "string" then
-		error("AddOn_Chomp.SendChatMessage(): target: expected string, got " .. type(target), 2)
+		error("Chomp.SendChatMessage: target: expected string, got " .. type(target), 2)
 	elseif kind == "CHANNEL" and type(target) ~= "number" then
-		error("AddOn_Chomp.SendChatMessage(): target: expected number, got " .. type(target), 2)
+		error("Chomp.SendChatMessage: target: expected number, got " .. type(target), 2)
 	elseif priority and not PRIORITIES_HASH[priority] then
-		error("AddOn_Chomp.SendChatMessage(): priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
+		error("Chomp.SendChatMessage: priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
 	elseif queue and type(queue) ~= "string" then
-		error("AddOn_Chomp.SendChatMessage(): queue: expected string or nil, got " .. type(queue), 2)
+		error("Chomp.SendChatMessage: queue: expected string or nil, got " .. type(queue), 2)
 	elseif callback and type(callback) ~= "function" then
-		error("AddOn_Chomp.SendChatMessage(): callback: expected function or nil, got " .. type(callback), 2)
+		error("Chomp.SendChatMessage: callback: expected function or nil, got " .. type(callback), 2)
 	end
 
 	local length = #text
 	if length > 255 then
-		error("AddOn_Chomp.SendChatMessage(): text length cannot exceed 255 bytes", 2)
+		error("Chomp.SendChatMessage: text length cannot exceed 255 bytes", 2)
 	end
 	if not Internal.isReady then
 		QueueMessageOut("SendChatMessage", text, kind, language, target, priority, queue, callback, callbackArg)
@@ -257,26 +258,26 @@ function AddOn_Chomp.SendChatMessage(text, kind, language, target, priority, que
 	return Internal:Enqueue(priority or DEFAULT_PRIORITY, queue or kind .. (target or ""), message)
 end
 
-function AddOn_Chomp.BNSendGameData(bnetIDGameAccount, prefix, text, priority, queue, callback, callbackArg)
+function Chomp.BNSendGameData(bnetIDGameAccount, prefix, text, priority, queue, callback, callbackArg)
 	if type(prefix) ~= "string" then
-		error("AddOn_Chomp.BNSendGameData(): prefix: expected string, got " .. type(text), 2)
+		error("Chomp.BNSendGameData: prefix: expected string, got " .. type(text), 2)
 	elseif type(text) ~= "string" then
-		error("AddOn_Chomp.BNSendGameData(): text: expected string, got " .. type(text), 2)
+		error("Chomp.BNSendGameData: text: expected string, got " .. type(text), 2)
 	elseif type(bnetIDGameAccount) ~= "number" then
-		error("AddOn_Chomp.BNSendGameData(): bnetIDGameAccount: expected number, got " .. type(bnetIDGameAccount), 2)
+		error("Chomp.BNSendGameData: bnetIDGameAccount: expected number, got " .. type(bnetIDGameAccount), 2)
 	elseif priority and not PRIORITIES_HASH[priority] then
-		error("AddOn_Chomp.BNSendGameData(): priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
+		error("Chomp.BNSendGameData: priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
 	elseif queue and type(queue) ~= "string" then
-		error("AddOn_Chomp.BNSendGameData(): queue: expected string or nil, got " .. type(queue), 2)
+		error("Chomp.BNSendGameData: queue: expected string or nil, got " .. type(queue), 2)
 	elseif callback and type(callback) ~= "function" then
-		error("AddOn_Chomp.BNSendGameData(): callback: expected function or nil, got " .. type(callback), 2)
+		error("Chomp.BNSendGameData: callback: expected function or nil, got " .. type(callback), 2)
 	end
 
 	local length = #text
 	if length > 4078 then
-		error("AddOn_Chomp.BNSendGameData(): text: length cannot exceed 4078 bytes", 2)
+		error("Chomp.BNSendGameData: text: length cannot exceed 4078 bytes", 2)
 	elseif #prefix > 16 then
-		error("AddOn_Chomp.BNSendGameData(): prefix: length cannot exceed 16 bytes", 2)
+		error("Chomp.BNSendGameData: prefix: length cannot exceed 16 bytes", 2)
 	end
 
 	if not Internal.isReady then
@@ -310,22 +311,22 @@ function AddOn_Chomp.BNSendGameData(bnetIDGameAccount, prefix, text, priority, q
 	return Internal:Enqueue(priority or DEFAULT_PRIORITY, queue or ("%s%d"):format(prefix, bnetIDGameAccount), message)
 end
 
-function AddOn_Chomp.BNSendWhisper(bnetIDAccount, text, priority, queue, callback, callbackArg)
+function Chomp.BNSendWhisper(bnetIDAccount, text, priority, queue, callback, callbackArg)
 	if type(text) ~= "string" then
-		error("AddOn_Chomp.BNSendWhisper(): text: expected string, got " .. type(text), 2)
+		error("Chomp.BNSendWhisper: text: expected string, got " .. type(text), 2)
 	elseif type(bnetIDAccount) ~= "number" then
-		error("AddOn_Chomp.BNSendWhisper(): bnetIDAccount: expected number, got " .. type(bnetIDAccount), 2)
+		error("Chomp.BNSendWhisper: bnetIDAccount: expected number, got " .. type(bnetIDAccount), 2)
 	elseif priority and not PRIORITIES_HASH[priority] then
-		error("AddOn_Chomp.BNSendWhisper(): priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
+		error("Chomp.BNSendWhisper: priority: expected \"HIGH\", \"MEDIUM\", \"LOW\", or nil, got " .. tostring(priority), 2)
 	elseif queue and type(queue) ~= "string" then
-		error("AddOn_Chomp.BNSendWhisper(): queue: expected string or nil, got " .. type(queue), 2)
+		error("Chomp.BNSendWhisper: queue: expected string or nil, got " .. type(queue), 2)
 	elseif callback and type(callback) ~= "function" then
-		error("AddOn_Chomp.BNSendWhisper(): callback: expected function or nil, got " .. type(callback), 2)
+		error("Chomp.BNSendWhisper: callback: expected function or nil, got " .. type(callback), 2)
 	end
 
 	local length = #text
 	if length > 997 then
-		error("AddOn_Chomp.BNSendWhisper(): text length cannot exceed 997 bytes", 2)
+		error("Chomp.BNSendWhisper: text length cannot exceed 997 bytes", 2)
 	end
 
 	if not Internal.isReady then
@@ -358,7 +359,7 @@ function AddOn_Chomp.BNSendWhisper(bnetIDAccount, text, priority, queue, callbac
 	return Internal:Enqueue(priority or DEFAULT_PRIORITY, queue or tostring(bnetIDAccount), message)
 end
 
-function AddOn_Chomp.IsSending()
+function Chomp.IsSending()
 	return Internal.isSending
 end
 
@@ -368,24 +369,24 @@ local DEFAULT_SETTINGS = {
 		["string"] = true,
 	},
 }
-function AddOn_Chomp.RegisterAddonPrefix(prefix, callback, prefixSettings)
+function Chomp.RegisterAddonPrefix(prefix, callback, prefixSettings)
 	local prefixType = type(prefix)
 	if prefixType ~= "string" then
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefix: expected string, got " .. prefixType, 2)
+		error("Chomp.RegisterAddonPrefix: prefix: expected string, got " .. prefixType, 2)
 	elseif prefixType == "string" and #prefix > 16 then
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefix: length cannot exceed 16 bytes", 2)
+		error("Chomp.RegisterAddonPrefix: prefix: length cannot exceed 16 bytes", 2)
 	elseif type(callback) ~= "function" then
-		error("AddOn_Chomp.RegisterAddonPrefix(): callback: expected function, got " .. type(callback), 2)
+		error("Chomp.RegisterAddonPrefix: callback: expected function, got " .. type(callback), 2)
 	elseif prefixSettings and type(prefixSettings) ~= "table" then
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefixSettings: expected table or nil, got " .. type(prefixSettings), 2)
+		error("Chomp.RegisterAddonPrefix: prefixSettings: expected table or nil, got " .. type(prefixSettings), 2)
 	end
 	if not prefixSettings then
 		prefixSettings = DEFAULT_SETTINGS
 	end
 	if prefixSettings.validTypes and type(prefixSettings.validTypes) ~= "table" then
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefixSettings.validTypes: expected table or nil, got " .. type(prefixSettings.validTypes), 2)
+		error("Chomp.RegisterAddonPrefix: prefixSettings.validTypes: expected table or nil, got " .. type(prefixSettings.validTypes), 2)
 	elseif prefixSettings.rawCallback and type(prefixSettings.rawCallback) ~= "function" then
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefixSettings.rawCallback: expected function or nil, got " .. type(prefixSettings.rawCallback), 2)
+		error("Chomp.RegisterAddonPrefix: prefixSettings.rawCallback: expected function or nil, got " .. type(prefixSettings.rawCallback), 2)
 	end
 	local prefixData = Internal.Prefixes[prefix]
 	if not prefixData then
@@ -407,29 +408,12 @@ function AddOn_Chomp.RegisterAddonPrefix(prefix, callback, prefixSettings)
 			C_ChatInfo.RegisterAddonMessagePrefix(prefix)
 		end
 	else
-		error("AddOn_Chomp.RegisterAddonPrefix(): prefix handler already registered, Chomp currently supports only one handler per prefix")
+		error("Chomp.RegisterAddonPrefix: prefix handler already registered, Chomp currently supports only one handler per prefix")
 	end
 end
 
-local function BNGetIDGameAccount(name)
-	if not BNFeaturesEnabledAndConnected() then
-		return nil
-	end
-	name = AddOn_Chomp.NameMergedRealm(name)
-	for i = 1, BNGetNumFriends() do
-		for j = 1, Internal:GetBNFriendNumGameAccounts(i) do
-			local account = Internal:GetBNFriendGameAccountInfo(i, j)
-			if account.isOnline and account.clientProgram == BNET_CLIENT_WOW then
-				local realm = account.realmName and (account.realmName:gsub("%s*%-*", "")) or nil
-				if realm
-					and (not Internal.SameRealm[realm] or account.factionName ~= UnitFactionGroup("player"))
-					and AddOn_Chomp.InsensitiveStringEquals(name, AddOn_Chomp.NameMergedRealm(account.characterName, realm)) then
-					return account.gameAccountID
-				end
-			end
-		end
-	end
-	return nil
+function Chomp.IsAddonPrefixRegistered(prefix)
+	return Internal.Prefixes[prefix] ~= nil
 end
 
 local nextSessionID = math.random(0, 4095)
@@ -443,10 +427,11 @@ local function SplitAndSend(sendFunc, maxSize, bitField, prefix, text, ...)
 	local sessionID = nextSessionID
 	nextSessionID = (nextSessionID + 1) % 4096
 	local position = 1
+	local codecVersion = Internal:GetCodecVersionFromBitfield(bitField)
 	while position <= textLen do
 		-- Only *need* to do a safe substring for encoded channels, but doing so
 		-- always shouldn't hurt.
-		local msgText, offset = AddOn_Chomp.SafeSubString(text, position, position + maxSize - 1, textLen)
+		local msgText, offset = Chomp.SafeSubString(text, position, position + maxSize - 1, textLen, codecVersion)
 		if offset > 0 then
 			-- Update total offset and total message number if needed.
 			totalOffset = totalOffset + offset
@@ -460,15 +445,15 @@ local function SplitAndSend(sendFunc, maxSize, bitField, prefix, text, ...)
 end
 
 local function ToInGame(bitField, prefix, text, kind, target, priority, queue)
-	return SplitAndSend(AddOn_Chomp.SendAddonMessage, 255, bitField, prefix, text, kind, target, priority, queue)
+	return SplitAndSend(Chomp.SendAddonMessage, 255, bitField, prefix, text, kind, target, priority, queue)
 end
 
 local function ToInGameLogged(bitField, prefix, text, kind, target, priority, queue)
-	return SplitAndSend(AddOn_Chomp.SendAddonMessageLogged, 255, bitField, prefix, text, kind, target, priority, queue)
+	return SplitAndSend(Chomp.SendAddonMessageLogged, 255, bitField, prefix, text, kind, target, priority, queue)
 end
 
 local function BNSendGameDataRearrange(prefix, text, bnetIDGameAccount, ...)
-	return AddOn_Chomp.BNSendGameData(bnetIDGameAccount, prefix, text, ...)
+	return Chomp.BNSendGameData(bnetIDGameAccount, prefix, text, ...)
 end
 
 local function ToBattleNet(bitField, prefix, text, kind, bnetIDGameAccount, priority, queue)
@@ -476,18 +461,18 @@ local function ToBattleNet(bitField, prefix, text, kind, bnetIDGameAccount, prio
 end
 
 local DEFAULT_OPTIONS = {}
-function AddOn_Chomp.SmartAddonMessage(prefix, data, kind, target, messageOptions)
+function Chomp.SmartAddonMessage(prefix, data, kind, target, messageOptions)
 	local prefixData = Internal.Prefixes[prefix]
 	if not prefixData then
-		error("AddOn_Chomp.SmartAddonMessage(): prefix: prefix has not been registered with Chomp", 2)
+		error("Chomp.SmartAddonMessage: prefix: prefix has not been registered with Chomp", 2)
 	elseif type(kind) ~= "string" then
-		error("AddOn_Chomp.SmartAddonMessage(): kind: expected string, got " .. type(kind), 2)
+		error("Chomp.SmartAddonMessage: kind: expected string, got " .. type(kind), 2)
 	elseif kind == "WHISPER" and type(target) ~= "string" then
-		error("AddOn_Chomp.SmartAddonMessage(): target: expected string, got " .. type(target), 2)
+		error("Chomp.SmartAddonMessage: target: expected string, got " .. type(target), 2)
 	elseif kind == "CHANNEL" and type(target) ~= "number" then
-		error("AddOn_Chomp.SmartAddonMessage(): target: expected number, got " .. type(target), 2)
+		error("Chomp.SmartAddonMessage: target: expected number, got " .. type(target), 2)
 	elseif target and kind ~= "WHISPER" and kind ~= "CHANNEL" then
-		error("AddOn_Chomp.SmartAddonMessage(): target: expected nil, got " .. type(target), 2)
+		error("Chomp.SmartAddonMessage: target: expected nil, got " .. type(target), 2)
 	end
 
 	if not messageOptions then
@@ -496,13 +481,13 @@ function AddOn_Chomp.SmartAddonMessage(prefix, data, kind, target, messageOption
 
 	local dataType = type(data)
 	if not prefixData.validTypes[dataType] then
-		error("AddOn_Chomp.SmartAddonMessage(): data: type not registered as valid: " .. dataType, 2)
+		error("Chomp.SmartAddonMessage: data: type not registered as valid: " .. dataType, 2)
 	elseif dataType ~= "string" and not messageOptions.serialize then
-		error("AddOn_Chomp.SmartAddonMessage(): data: no serialization requested, but serialization required for type: " .. dataType, 2)
+		error("Chomp.SmartAddonMessage: data: no serialization requested, but serialization required for type: " .. dataType, 2)
 	elseif messageOptions.priority and not PRIORITIES_HASH[messageOptions.priority] then
-		error("AddOn_Chomp.SmartAddonMessage(): messageOptions.priority: expected \"HIGH\", \"MEDIUM\", or \"LOW\", got " .. tostring(messageOptions.priority), 2)
+		error("Chomp.SmartAddonMessage: messageOptions.priority: expected \"HIGH\", \"MEDIUM\", or \"LOW\", got " .. tostring(messageOptions.priority), 2)
 	elseif messageOptions.queue and type(messageOptions.queue) ~= "string" then
-		error("AddOn_Chomp.SmartAddonMessage(): messageOptions.queue: expected string or nil, got " .. type(messageOptions.queue), 2)
+		error("Chomp.SmartAddonMessage: messageOptions.queue: expected string or nil, got " .. type(messageOptions.queue), 2)
 	end
 
 	if not Internal.isReady then
@@ -511,28 +496,36 @@ function AddOn_Chomp.SmartAddonMessage(prefix, data, kind, target, messageOption
 	end
 
 	local bitField = 0x000
+	local codecVersion = 2
+
+	-- v20+: Always set the CODECV2 bit. All clients on the network at this
+	--       point should support it. Setting this bit unconditionally will
+	--       eventually allow us to deprecate receipt of v1 codec data.
+	bitField = bit.bor(bitField, Internal.BITS.VERSION16, Internal.BITS.CODECV2)
+
 	if messageOptions.serialize then
 		bitField = bit.bor(bitField, Internal.BITS.SERIALIZE)
-		data = AddOn_Chomp.Serialize(data)
+		data = Chomp.Serialize(data)
 	end
 	if not messageOptions.binaryBlob then
-		local permitted, reason = AddOn_Chomp.CheckLoggedContents(data)
+		local permitted, reason = Chomp.CheckLoggedContents(data)
 		if not permitted then
-			error(("AddOn_Chomp.SmartAddonMessage(): data: messageOptions.binaryBlob not specified, but disallowed sequences found, code: %s"):format(reason), 2)
+			error(("Chomp.SmartAddonMessage: data: messageOptions.binaryBlob not specified, but disallowed sequences found, code: %s"):format(reason), 2)
 		end
 	end
 
 	if kind == "WHISPER" then
-		target = AddOn_Chomp.NameMergedRealm(target)
+		target = Chomp.NameMergedRealm(target)
 	end
+
 	local queue = ("%s%s%s"):format(prefix, kind, tostring(target) or "")
 
 	if kind == "WHISPER" then
-		-- BNGetIDGameAccount() only returns an ID for crossfaction and
+		-- GetBattleNetAccountID() only returns an ID for crossfaction and
 		-- crossrealm targets.
-		local bnetIDGameAccount = BNGetIDGameAccount(target)
+		local bnetIDGameAccount = Internal:GetBattleNetAccountID(target)
 		if bnetIDGameAccount then
-			ToBattleNet(bitField, prefix, Internal.EncodeQuotedPrintable(data, false), kind, bnetIDGameAccount, messageOptions.priority, messageOptions.queue or queue)
+			ToBattleNet(bitField, prefix, Internal.EncodeQuotedPrintable(data, false, codecVersion), kind, bnetIDGameAccount, messageOptions.priority, messageOptions.queue or queue)
 			return "BATTLENET"
 		end
 		local targetUnit = Ambiguate(target, "none")
@@ -542,7 +535,7 @@ function AddOn_Chomp.SmartAddonMessage(prefix, data, kind, target, messageOption
 		if prefixData.broadcastPrefix and messageOptions.allowBroadcast and UnitRealmRelationship(targetUnit) == LE_REALM_RELATION_COALESCED then
 			bitField = bit.bor(bitField, Internal.BITS.BROADCAST)
 			kind = UnitInRaid(targetUnit, LE_PARTY_CATEGORY_HOME) and not UnitInSubgroup(targetUnit, LE_PARTY_CATEGORY_HOME) and "RAID" or UnitInParty(targetUnit, LE_PARTY_CATEGORY_HOME) and "PARTY" or "INSTANCE_CHAT"
-			data = ("%s\127%s"):format(not messageOptions.universalBroadcast and AddOn_Chomp.NameMergedRealm(target) or "", data)
+			data = ("%s\127%s"):format(not messageOptions.universalBroadcast and Chomp.NameMergedRealm(target) or "", data)
 			target = nil
 			if messageOptions.universalBroadcast then
 				queue = nil
@@ -550,7 +543,7 @@ function AddOn_Chomp.SmartAddonMessage(prefix, data, kind, target, messageOption
 		end
 	end
 	if not messageOptions.binaryBlob then
-		ToInGameLogged(bitField, prefix, Internal.EncodeQuotedPrintable(data, true), kind, target, messageOptions.priority, messageOptions.queue or queue)
+		ToInGameLogged(bitField, prefix, Internal.EncodeQuotedPrintable(data, true, codecVersion), kind, target, messageOptions.priority, messageOptions.queue or queue)
 		return "LOGGED"
 	end
 	ToInGame(bitField, prefix, data, kind, target, messageOptions.priority, messageOptions.queue or queue)
@@ -559,21 +552,21 @@ end
 
 local ReportLocation = CreateFromMixins(PlayerLocationMixin)
 
-function AddOn_Chomp.CheckReportGUID(prefix, guid)
+function Chomp.CheckReportGUID(prefix, guid)
 	local prefixData = Internal.Prefixes[prefix]
 	if type(prefix) ~= "string" then
-		error("AddOn_Chomp.CheckReportGUID(): prefix: expected string, got " .. type(prefix), 2)
+		error("Chomp.CheckReportGUID: prefix: expected string, got " .. type(prefix), 2)
 	elseif type(guid) ~= "string" then
-		error("AddOn_Chomp.CheckReportGUID(): guid: expected string, got " .. type(guid), 2)
+		error("Chomp.CheckReportGUID: guid: expected string, got " .. type(guid), 2)
 	elseif not prefixData then
-		error("AddOn_Chomp.CheckReportGUID(): prefix: prefix has not been registered with Chomp", 2)
+		error("Chomp.CheckReportGUID: prefix: prefix has not been registered with Chomp", 2)
 	end
 	local success, _, _, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, guid)
 	if not success or not name or name == UNKNOWNOBJECT then
 		return false, "UNKNOWN"
 	end
-	local target = AddOn_Chomp.NameMergedRealm(name, realm)
-	if BNGetIDGameAccount(target) then
+	local target = Chomp.NameMergedRealm(name, realm)
+	if Internal:GetBattleNetAccountID(target) then
 		return false, "BATTLENET"
 	end
 	ReportLocation:SetGUID(guid)
@@ -584,21 +577,21 @@ function AddOn_Chomp.CheckReportGUID(prefix, guid)
 	end
 end
 
-function AddOn_Chomp.ReportGUID(prefix, guid, customMessage)
+function Chomp.ReportGUID(prefix, guid, customMessage)
 	local prefixData = Internal.Prefixes[prefix]
 	if type(prefix) ~= "string" then
-		error("AddOn_Chomp.ReportGUID(): prefix: expected string, got " .. type(prefix), 2)
+		error("Chomp.ReportGUID: prefix: expected string, got " .. type(prefix), 2)
 	elseif customMessage and type(customMessage) ~= "string" then
-		error("AddOn_Chomp.ReportGUID(): customMessage: expected string, got " .. type(customMessage), 2)
+		error("Chomp.ReportGUID: customMessage: expected string, got " .. type(customMessage), 2)
 	elseif type(guid) ~= "string" then
-		error("AddOn_Chomp.ReportGUID(): guid: expected string, got " .. type(guid), 2)
+		error("Chomp.ReportGUID: guid: expected string, got " .. type(guid), 2)
 	elseif not prefixData then
-		error("AddOn_Chomp.ReportGUID(): prefix: prefix has not been registered with Chomp", 2)
+		error("Chomp.ReportGUID: prefix: prefix has not been registered with Chomp", 2)
 	end
-	local canReport, reason = AddOn_Chomp.CheckReportGUID(prefix, guid)
+	local canReport, reason = Chomp.CheckReportGUID(prefix, guid)
 	if canReport then
 		if C_ReportSystem then
-			local _, _, _, _, _, name, realm = GetPlayerInfoByGUID(guid);
+			local _, _, _, _, _, name, realm = GetPlayerInfoByGUID(guid)
 			if name and realm then
 				C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_LANGUAGE, name .. "-" .. realm, ReportLocation)
 			end
@@ -610,46 +603,100 @@ function AddOn_Chomp.ReportGUID(prefix, guid, customMessage)
 	return false, reason
 end
 
-function AddOn_Chomp.RegisterErrorCallback(callback)
-	if type(callback) ~= "function" then
-		error("AddOn_Chomp.RegisterErrorCallback(): callback: expected function, got " .. type(callback), 2)
+-- TODO: Can remove this once Classic, BC, and Retail are all updated.
+local function CopyValuesAsKeys(tbl)
+	local output = {}
+
+	for k, v in ipairs(tbl) do
+		output[v] = v
 	end
-	for i, checkCallback in ipairs(Internal.ErrorCallbacks) do
-		if callback == checkCallback then
-			return false
-		end
+
+	return output
+end
+
+Chomp.Event = CopyValuesAsKeys(
+	{
+		"OnMessageReceived",
+		"OnError",
+	}
+)
+
+function Chomp.RegisterCallback(event, func, owner)
+	if type(event) ~= "string" then
+		error("Chomp.RegisterCallback: 'event' must be a string")
+	elseif not Chomp.Event[event] then
+		error(string.format("Chomp.RegisterCallback: event %q does not exist", event))
+	elseif type(func) ~= "function" and type(func) ~= "table" then
+		error("Chomp.RegisterCallback: 'func' must be callable")
+	elseif type(owner) ~= "string" and type(owner) ~= "table" and type(owner) ~= "thread" then
+		error("Chomp.RegisterCallback: 'owner' must be string, table, or coroutine")
 	end
-	Internal.ErrorCallbacks[#Internal.ErrorCallbacks + 1] = callback
+
+	Internal.RegisterCallback(owner, event, function(_, ...) return func(owner, ...) end)
+end
+
+function Chomp.UnregisterCallback(event, owner)
+	if type(event) ~= "string" then
+		error("Chomp.UnregisterCallback: 'event' must be a string")
+	elseif not Chomp.Event[event] then
+		error(string.format("Chomp.UnregisterCallback: event %q does not exist", event))
+	elseif type(owner) ~= "string" and type(owner) ~= "table" and type(owner) ~= "thread" then
+		error("Chomp.UnregisterCallback: 'owner' must be string, table, or coroutine")
+	end
+
+	Internal.UnregisterCallback(owner, event)
+end
+
+function Chomp.UnregisterAllCallbacks(owner)
+	if type(owner) ~= "string" and type(owner) ~= "table" and type(owner) ~= "thread" then
+		error("Chomp.UnregisterAllCallbacks: 'owner' must be string, table, or coroutine")
+	end
+
+	Internal.UnregisterAllCallbacks(owner)
+end
+
+function Chomp.RegisterErrorCallback(callback)
+	-- v18+: RegisterErrorCallback is deprecated in favor of the generic
+	--       RegisterCallback system.
+
+	local event = "OnError"
+	local func  = function(_, ...) return callback(...) end
+	local owner = tostring(callback)
+
+	Chomp.RegisterCallback(event, func, owner)
+
 	return true
 end
 
-function AddOn_Chomp.UnegisterErrorCallback(callback)
-	if type(callback) ~= "function" then
-		error("AddOn_Chomp.UnegisterErrorCallback(): callback: expected function, got " .. type(callback), 2)
-	end
-	for i, checkCallback in ipairs(Internal.ErrorCallbacks) do
-		if callback == checkCallback then
-			table.remove(i)
-			return true
-		end
-	end
-	return false
+function Chomp.UnregisterErrorCallback(callback)
+	-- v18+: UnregisterErrorCallback is deprecated in favor of the generic
+	--       UnregisterCallback system.
+
+	local event = "OnError"
+	local owner = tostring(callback)
+
+	Chomp.UnregisterCallback(event, owner)
+
+	return true
 end
 
-function AddOn_Chomp.GetBPS()
+-- v18+: Deprecated alias for the old typo'd function name.
+Chomp.UnegisterErrorCallback = Chomp.UnregisterErrorCallback
+
+function Chomp.GetBPS()
 	return Internal.BPS, Internal.BURST
 end
 
-function AddOn_Chomp.SetBPS(bps, burst)
+function Chomp.SetBPS(bps, burst)
 	if type(bps) ~= "number" then
-		error("AddOn_Chomp.SetBPS(): bps: expected number, got " .. type(bps), 2)
+		error("Chomp.SetBPS: bps: expected number, got " .. type(bps), 2)
 	elseif type(burst) ~= "number" then
-		error("AddOn_Chomp.SetBPS(): burst: expected number, got " .. type(burst), 2)
+		error("Chomp.SetBPS: burst: expected number, got " .. type(burst), 2)
 	end
 	Internal.BPS = bps
 	Internal.BURST = burst
 end
 
-function AddOn_Chomp.GetVersion()
+function Chomp.GetVersion()
 	return Internal.VERSION
 end
