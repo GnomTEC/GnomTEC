@@ -81,7 +81,7 @@
 			</Layer>
 		</Layers>
         <Frames>
-			<ScrollFrame name="$parentscrollFrame" parentKey="scrollFrame" fade="false">
+			<ScrollFrame name="$parentscrollFrame" parentKey="scrollFrame"> <!--  fade="false" -->
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>

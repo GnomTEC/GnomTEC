@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetContainerLayoutTabulator
--- Version: 9.0.2.18
+-- Version: 10.0.0.20
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2021 by Peter Jack
+-- Copyright © 2014-2022 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetContainerLayoutTabulator-1.0", 18
+local MAJOR, MINOR = "GnomTECWidgetContainerLayoutTabulator-1.0", 20
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.

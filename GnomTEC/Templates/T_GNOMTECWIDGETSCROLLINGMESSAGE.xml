@@ -12,7 +12,7 @@
 			</maxResize>
 		</ResizeBounds>
         <Frames>
-			<ScrollingMessageFrame name="$parentscrollingMessageFrame" parentKey="scrollingMessageFrame" fade="false">
+			<ScrollingMessageFrame name="$parentscrollingMessageFrame" parentKey="scrollingMessageFrame"> <!--  fade="false" -->
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>

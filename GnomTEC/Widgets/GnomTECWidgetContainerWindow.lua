@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTECWidgetContainerWindow
--- Version: 9.0.2.18
+-- Version: 10.0.0.20
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2014-2021 by Peter Jack
+-- Copyright © 2014-2022 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -18,7 +18,7 @@
 -- See the Licence for the specific language governing permissions and
 -- limitations under the Licence.
 -- **********************************************************************
-local MAJOR, MINOR = "GnomTECWidgetContainerWindow-1.0", 18
+local MAJOR, MINOR = "GnomTECWidgetContainerWindow-1.0", 20
 local _widget, _oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not _widget then return end -- No Upgrade needed.
@@ -321,23 +321,25 @@ function GnomTECWidgetContainerWindow(init)
 	end	
 
 	function self.SetPortrait(portrait)
-		if (("player" == string.lower(portrait) or ("target" == string.lower(portrait)))) then
+--	issues with SetPortraitToTexture since 10.0.0
+--		if (("player" == string.lower(portrait) or ("target" == string.lower(portrait)))) then
 
-			if (not protected.playerModel) then
-				protected.playerModel = CreateFrame("PlayerModel", nil, protected.widgetFrame)
-
-				protected.playerModel:SetPoint("TOPLEFT")
-				protected.playerModel:SetWidth("56")		
-				protected.playerModel:SetHeight("56")
-				
-				SetPortraitToTexture(protected.widgetFrame.portrait,[[Interface\Icons\Achievement_PVP_A_A]])
-			end
-			protected.playerModel:ClearModel()
-			protected.playerModel:SetUnit(portrait)
-			protected.playerModel:SetPortraitZoom(1)
-		else
-			SetPortraitToTexture(protected.widgetFrame.portrait,portrait)
-		end
+--			if (not protected.playerModel) then
+--				protected.playerModel = CreateFrame("PlayerModel", nil, protected.widgetFrame)
+--
+--				protected.playerModel:SetPoint("TOPLEFT")
+--				protected.playerModel:SetWidth("56")		
+--				protected.playerModel:SetHeight("56")
+--				
+--				SetPortraitToTexture(protected.widgetFrame.portrait,[[Interface\Icons\Achievement_PVP_A_A]])
+--				SetPortraitToTexture(protected.widgetFrame.portrait,[[Interface\Addons\GnomTEC_Assistant\icons\Inv_Misc_Tournaments_banner_Gnome]])
+--			end
+--			protected.playerModel:ClearModel()
+--			protected.playerModel:SetUnit(portrait)
+--			protected.playerModel:SetPortraitZoom(1)
+--		else
+--			SetPortraitToTexture(protected.widgetFrame.portrait, portrait)
+--		end
 	end
 
 	local base_Attach = self.Attach

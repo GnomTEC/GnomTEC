@@ -1,5 +1,11 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 10.0.0.20 (2022-10-27)
+* Updated libraries: Ace3
+* Updated TOC for WoW patch 10.0.0
+* Fixed some GUI issues for WoW patch 10.0.0
+* yet some graphics are not working correctly
+
 === 9.2.7.19 (2022-10-19)
 * Updated libraries: Ace3, libMSP, LibDBIcon-1.0, LibTourist-3.0
 
