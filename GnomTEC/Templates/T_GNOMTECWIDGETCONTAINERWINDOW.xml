@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 
 	<!-- T_GNOMTECWIDGETCONTAINERWINDOW: Standard template for GnomTECWidgetContainerWindow-->
-	<Frame name="T_GNOMTECWIDGETCONTAINERWINDOW" movable="true" resizable="true" clampedToScreen="true" toplevel="true" enableMouse="true" hidden="true" virtual="true" inherits="ButtonFrameTemplate">
+	<Frame name="T_GNOMTECWIDGETCONTAINERWINDOW" movable="true" resizable="true" clampedToScreen="true" toplevel="true" enableMouse="true" hidden="true" virtual="true" inherits="PortraitFrameTemplate">
 		<Size x="128" y="128"/>
 		<ResizeBounds>
 			<minResize>
@@ -11,74 +11,6 @@
 				<RelDimension x="1.0" y="1.0"/>
 			</maxResize>
 		</ResizeBounds>
-		<KeyValues>
-			<KeyValue key="backdropInfo" value="GNOMTEC_BACKDROP_WIDGET_CONTAINER_WINDOW" type="global"/>
-			<KeyValue key="backdropColor" value="GNOMTEC_BACKDROP_WIDGET_CONTAINER_WINDOW_COLOR" type="global"/>
-		</KeyValues>
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture name="$parentTopLeft" file="Interface\PaperDollInfoFrame\UI-Character-General-TopLeft">
-					<Size x="256" y="256"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-14" y="14"/>
-					</Anchors>
-					<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
-				</Texture>
-				<Texture name="$parentTopRight" file="Interface\PaperDollInfoFrame\UI-Character-General-TopRight">
-					<Size x="128" y="256"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="34" y="14"/>
-					</Anchors>
-					<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
-				</Texture>
-				<Texture name="$parentBottomLeft" file="Interface\PaperDollInfoFrame\UI-Character-General-BottomLeft">
-					<Size x="256" y="256"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-14" y="-78"/>
-					</Anchors>
-					<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
-				</Texture>
-				<Texture name="$parentBottomRight" file="Interface\PaperDollInfoFrame\UI-Character-General-BottomRight">
-					<Size x="128" y="256"/>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" x="34" y="-78"/>
-					</Anchors>
-					<TexCoords left="0" right="1.0" top="0" bottom="1.0"/>
-				</Texture>
-				<Texture name="$parentTop" file="Interface\PaperDollInfoFrame\UI-Character-General-TopLeft">
-					<Size x="128" y="256"/>
-					<Anchors>
-						<Anchor point="TOPLEFT"  x="64" y="14"/>
-						<Anchor point="TOPRIGHT" x="-64" y="14"/>
-					</Anchors>
-					<TexCoords left="0.5" right="1.0" top="0" bottom="1.0"/>
-				</Texture>				
-				<Texture name="$parentBottom" file="Interface\PaperDollInfoFrame\UI-Character-General-BottomLeft">
-					<Size x="128" y="256"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="64" y="-78"/>
-						<Anchor point="BOTTOMRIGHT" x="-64" y="-78"/>
-					</Anchors>
-					<TexCoords left="0.5" right="1.0" top="0" bottom="1.0"/>
-				</Texture>
-				<Texture name="$parentLeft" file="Interface\PaperDollInfoFrame\UI-Character-General-TopLeft">
-					<Size x="256" y="128"/>
-					<Anchors>
-						<Anchor point="TOPLEFT"  x="-14" y="-64"/>
-						<Anchor point="BOTTOMLEFT" x="-14" y="64"/>
-					</Anchors>
-					<TexCoords left="0.0" right="1.0" top="0.5" bottom="1.0"/>
-				</Texture>				
-				<Texture name="$parentRight" file="Interface\PaperDollInfoFrame\UI-Character-General-TopRight">
-					<Size x="128" y="128"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="34" y="-64"/>
-						<Anchor point="BOTTOMRIGHT" x="34" y="64"/>
-					</Anchors>
-					<TexCoords left="0" right="1.0" top="0.5" bottom="1.0"/>
-				</Texture>
-			</Layer>
-		</Layers> 
 		<Frames>
     		<Frame name="$parentattachFrame" parentKey="attachFrame">
 				<Anchors>
