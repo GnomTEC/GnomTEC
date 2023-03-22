@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC (GnomTEC Addon Framework)
--- Version: 10.0.5.21
+-- Version: 10.0.7.21
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
@@ -29,8 +29,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_")
 local addonInfo = {
 	["Name"] = "GnomTEC (Addon Framework)",
 	["Description"] = L["L_DESCRIPTION"],	
-	["Version"] = "10.0.5.21",
-	["Date"] = "2023-01-26",
+	["Version"] = "10.0.7.21",
+	["Date"] = "2023-03-22",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "https://www.gnomtec.de/",

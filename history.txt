@@ -1,5 +1,8 @@
 == GnomTEC (GnomTEC Addon Framework) - Change History 
 
+=== 10.0.7.21 (2023-03-22)
+* Updated TOC for WoW patch 10.0.7
+
 === 10.0.5.21 (2023-01-26)
 * Updated TOC for WoW patch 10.0.5
 
